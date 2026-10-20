@@ -1,0 +1,7 @@
+# csharp build binaries
+.vs/
+bin/
+obj/
+
+# Visual Studio user settings
+*.csproj.user
