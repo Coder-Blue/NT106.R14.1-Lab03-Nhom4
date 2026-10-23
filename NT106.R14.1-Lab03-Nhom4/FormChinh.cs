@@ -1,10 +1,12 @@
 using NT106.R14._1_Lab03_Nhom4.Bai03;
+using NT106.R14._1_Lab03_Nhom4.Bai05;
 
 namespace NT106.R14._1_Lab03_Nhom4;
 
 public partial class FormChinh : Form
 {
     private Bai03Form? bai03Form;
+    private Bai05Form? bai05Form;
 
     public FormChinh() => InitializeComponent();
 
@@ -19,5 +21,18 @@ public partial class FormChinh : Form
         }
 
         bai03Form.Activate();
+    }
+
+    private void btnBai05_Click(object sender, EventArgs e)
+    {
+        if (bai05Form is null || bai05Form.IsDisposed)
+        {
+            bai05Form = new Bai05Form();
+            bai05Form.FormClosed += (_, _) => bai05Form = null;
+            bai05Form.Show(this);
+            return;
+        }
+
+        bai05Form.Activate();
     }
 }
