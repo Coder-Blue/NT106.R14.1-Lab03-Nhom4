@@ -1,11 +1,11 @@
-namespace NT106.R14._1_Lab03_Nhom4;
+namespace NT106.R14._1_Lab03_Nhom4.Bai03;
 
-public partial class Bai03 : Form
+public partial class Bai03Form : Form
 {
     private Bai03Server? serverForm;
     private Bai03Client? clientForm;
 
-    public Bai03() => InitializeComponent();
+    public Bai03Form() => InitializeComponent();
 
     private void btnMoServer_Click(object sender, EventArgs e)
     {

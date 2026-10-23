@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace NT106.R14._1_Lab03_Nhom4;
+namespace NT106.R14._1_Lab03_Nhom4.Bai03;
 
 public partial class Bai03Server : Form
 {

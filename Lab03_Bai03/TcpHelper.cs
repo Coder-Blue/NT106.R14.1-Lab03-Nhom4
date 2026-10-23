@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace NT106.R14._1_Lab03_Nhom4;
+namespace NT106.R14._1_Lab03_Nhom4.Bai03;
 
 public static class TcpHelper
 {

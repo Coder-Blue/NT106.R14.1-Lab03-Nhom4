@@ -1,4 +1,4 @@
-namespace NT106.R14._1_Lab03_Nhom4
+namespace NT106.R14._1_Lab03_Nhom4.Bai03
 {
     partial class Bai03Client
     {

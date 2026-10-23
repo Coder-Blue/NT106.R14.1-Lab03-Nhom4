@@ -1,6 +1,6 @@
-namespace NT106.R14._1_Lab03_Nhom4
+namespace NT106.R14._1_Lab03_Nhom4.Bai03
 {
-    partial class Bai03
+    partial class Bai03Form
     {
         /// <summary>
         ///  Required designer variable.
@@ -119,7 +119,7 @@ namespace NT106.R14._1_Lab03_Nhom4
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "Bai03";
+            Name = "Bai03Form";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Bài 03 - TCP Server / Client";
             ResumeLayout(false);
