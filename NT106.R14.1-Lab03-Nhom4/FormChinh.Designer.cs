@@ -125,19 +125,21 @@ namespace NT106.R14._1_Lab03_Nhom4
             //
             // btnBai04
             //
-            btnBai04.BackColor = Color.FromArgb(236, 240, 245);
-            btnBai04.Cursor = Cursors.Default;
-            btnBai04.Enabled = false;
+            btnBai04.BackColor = Color.FromArgb(51, 122, 183);
+            btnBai04.Cursor = Cursors.Hand;
             btnBai04.FlatAppearance.BorderSize = 0;
+            btnBai04.FlatAppearance.MouseDownBackColor = Color.FromArgb(40, 96, 145);
+            btnBai04.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 138, 204);
             btnBai04.FlatStyle = FlatStyle.Flat;
             btnBai04.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            btnBai04.ForeColor = Color.FromArgb(120, 130, 140);
+            btnBai04.ForeColor = Color.White;
             btnBai04.Location = new Point(40, 330);
             btnBai04.Name = "btnBai04";
             btnBai04.Size = new Size(280, 112);
             btnBai04.TabIndex = 6;
             btnBai04.Text = "Bài 04\nQuản lý phòng vé";
             btnBai04.UseVisualStyleBackColor = false;
+            btnBai04.Click += btnBai04_Click;
             //
             // btnBai05
             //
@@ -179,7 +181,7 @@ namespace NT106.R14._1_Lab03_Nhom4
             lblGhiChu.Name = "lblGhiChu";
             lblGhiChu.Size = new Size(980, 24);
             lblGhiChu.TabIndex = 9;
-            lblGhiChu.Text = "Bài 03 đã hoàn thành. Các bài còn lại sẽ được cập nhật sau.";
+            lblGhiChu.Text = "Bài 03 và Bài 04 đã hoàn thành. Các bài còn lại sẽ được cập nhật sau.";
             lblGhiChu.TextAlign = ContentAlignment.MiddleCenter;
             //
             // FormChinh

@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="NT106.R14.1-Lab03-Nhom4/NT106.R14.1-Lab03-Nhom4.csproj" />
   <Project Path="Lab03_Bai03/Lab03_Bai03.csproj" />
+  <Project Path="Lab03_Bai04/Lab03_Bai04.csproj" />
 </Solution>
