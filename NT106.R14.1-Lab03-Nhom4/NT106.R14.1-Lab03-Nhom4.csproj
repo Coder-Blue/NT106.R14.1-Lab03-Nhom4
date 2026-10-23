@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lab03_Bai03\Lab03_Bai03.csproj" />
+    <ProjectReference Include="..\Lab03_Bai04\Lab03_Bai04.csproj" />
     <ProjectReference Include="..\Lab03_Bai05\Lab03_Bai05.csproj" />
   </ItemGroup>
 
