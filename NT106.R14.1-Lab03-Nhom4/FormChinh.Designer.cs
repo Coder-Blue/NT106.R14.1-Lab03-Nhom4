@@ -143,19 +143,21 @@ namespace NT106.R14._1_Lab03_Nhom4
             //
             // btnBai05
             //
-            btnBai05.BackColor = Color.FromArgb(236, 240, 245);
-            btnBai05.Cursor = Cursors.Default;
-            btnBai05.Enabled = false;
+            btnBai05.BackColor = Color.FromArgb(51, 122, 183);
+            btnBai05.Cursor = Cursors.Hand;
             btnBai05.FlatAppearance.BorderSize = 0;
+            btnBai05.FlatAppearance.MouseDownBackColor = Color.FromArgb(40, 96, 145);
+            btnBai05.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 138, 204);
             btnBai05.FlatStyle = FlatStyle.Flat;
             btnBai05.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            btnBai05.ForeColor = Color.FromArgb(120, 130, 140);
+            btnBai05.ForeColor = Color.White;
             btnBai05.Location = new Point(350, 330);
             btnBai05.Name = "btnBai05";
             btnBai05.Size = new Size(280, 112);
             btnBai05.TabIndex = 7;
             btnBai05.Text = "Bài 05\nHôm nay ăn gì?";
             btnBai05.UseVisualStyleBackColor = false;
+            btnBai05.Click += btnBai05_Click;
             //
             // btnBai06
             //
@@ -181,7 +183,7 @@ namespace NT106.R14._1_Lab03_Nhom4
             lblGhiChu.Name = "lblGhiChu";
             lblGhiChu.Size = new Size(980, 24);
             lblGhiChu.TabIndex = 9;
-            lblGhiChu.Text = "Bài 03 và Bài 04 đã hoàn thành. Các bài còn lại sẽ được cập nhật sau.";
+            lblGhiChu.Text = "Bài 03, 04 và 05 đã hoàn thành. Bài 06 sẽ được cập nhật sau.";
             lblGhiChu.TextAlign = ContentAlignment.MiddleCenter;
             //
             // FormChinh
