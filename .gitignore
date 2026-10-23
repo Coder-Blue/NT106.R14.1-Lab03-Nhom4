@@ -5,3 +5,6 @@ obj/
 
 # Visual Studio user settings
 *.csproj.user
+
+# Tài liệu tham khảo, không đưa vào source
+Lab-3-Working-with-Sockets-in-C.pdf
