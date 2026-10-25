@@ -1,32 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+namespace NT106.R14._1_Lab03_Nhom4.Bai06;
 
-namespace Lab03_Bai06
+public partial class Bai06Form : Form
 {
-    public partial class Bai06Form : Form
+    private Bai06Server? serverForm;
+
+    public Bai06Form() => InitializeComponent();
+
+    private void btnMoServer_Click(object sender, EventArgs e)
     {
-        public Bai06Form()
+        if (serverForm is null || serverForm.IsDisposed)
         {
-            InitializeComponent();
+            serverForm = new Bai06Server();
+            serverForm.FormClosed += (_, _) => serverForm = null;
+            serverForm.Show(this);
+            return;
         }
 
-        private void btnOpenServer_Click(object sender, EventArgs e)
-        {
-            Bai06Server server = new Bai06Server();
-            server.Show();
-        }
+        serverForm.Activate();
+    }
 
-        private void btnOpenClient_Click(object sender, EventArgs e)
-        {
-            Bai06Client client = new Bai06Client();
-            client.Show();
-        }
+    private void btnMoClient_Click(object sender, EventArgs e)
+    {
+        var client = new Bai06Client();
+        client.Show(this);
     }
 }

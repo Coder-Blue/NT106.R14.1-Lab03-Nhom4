@@ -1,135 +1,274 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace Lab03_Bai06
+namespace NT106.R14._1_Lab03_Nhom4.Bai06;
+
+public partial class Bai06Client : Form
 {
-    public partial class Bai06Client : Form
+    private TcpClient? tcpClient;
+    private StreamReader? boDoc;
+    private StreamWriter? boGhi;
+    private CancellationTokenSource? nguonHuy;
+    private string? tenCuaToi;
+
+    public Bai06Client()
     {
-        private TcpClient tcpClient;
-        private StreamReader reader;
-        private StreamWriter writer;
-        private string myName;
+        InitializeComponent();
+        txtDiaChi.Text = ChatHelper.DiaChiMacDinh;
+        txtCong.Text = ChatHelper.CongMacDinh.ToString();
+        cmbNguoiNhan.Items.Add("Mọi người");
+        cmbNguoiNhan.SelectedIndex = 0;
+        CapNhatNut();
+        CapNhatTrangThai("Chưa kết nối.");
+    }
 
-        public Bai06Client()
+    private async void btnKetNoi_Click(object sender, EventArgs e)
+    {
+        var ten = ChatHelper.ChuanHoaTen(txtTenNguoiDung.Text);
+        if (!ChatHelper.TenHopLe(ten))
         {
-            InitializeComponent();
-            CheckForIllegalCrossThreadCalls = false;
-            btnSend.Enabled = false;
+            MessageBox.Show(this, "Tên phải có từ 1 đến 30 ký tự.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtTenNguoiDung.Focus();
+            return;
         }
 
-        private void btnConnect_Click(object sender, EventArgs e)
+        var (hopLe, diemCuoi) = ChatHelper.DocDiemCuoi(txtDiaChi.Text, txtCong.Text);
+        if (!hopLe || diemCuoi is null)
         {
-            if (string.IsNullOrWhiteSpace(txtName.Text))
-            {
-                MessageBox.Show("Vui lòng nhập tên của bạn trước khi kết nối!");
-                return;
-            }
-
-            try
-            {
-                myName = txtName.Text.Trim();
-                tcpClient = new TcpClient("127.0.0.1", 8080);
-                UTF8Encoding utf8NoBom = new UTF8Encoding(false);
-                reader = new StreamReader(tcpClient.GetStream(), utf8NoBom);
-                writer = new StreamWriter(tcpClient.GetStream(), utf8NoBom) { AutoFlush = true };
-
-                writer.WriteLine(myName);
-
-                btnConnect.Enabled = false;
-                txtName.ReadOnly = true;
-                btnSend.Enabled = true;
-                this.Text = "Client - " + myName;
-
-                Thread receiveThread = new Thread(ReceiveMessages);
-                receiveThread.IsBackground = true;
-                receiveThread.Start();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Không thể kết nối đến Server: " + ex.Message);
-            }
+            MessageBox.Show(this, "Địa chỉ IP hoặc cổng không hợp lệ.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
         }
 
-        private void btnSend_Click(object sender, EventArgs e)
+        btnKetNoi.Enabled = false;
+        CapNhatTrangThai("Đang kết nối...");
+
+        try
         {
-            if (writer == null || string.IsNullOrWhiteSpace(txtMessage.Text)) return;
+            tcpClient = new TcpClient();
+            await tcpClient.ConnectAsync(diemCuoi.Address, diemCuoi.Port);
 
-            string msg = txtMessage.Text.Trim();
-            string selectedTarget = lstParticipants.SelectedItem?.ToString();
+            var stream = tcpClient.GetStream();
+            boDoc = ChatHelper.TaoBoDoc(stream);
+            boGhi = ChatHelper.TaoBoGhi(stream);
+            nguonHuy = new CancellationTokenSource();
 
-            if (string.IsNullOrEmpty(selectedTarget) || selectedTarget == "All (Chat chung)")
-            {
-                writer.WriteLine($"PUBLIC|{msg}");
-                lstChatBox.Items.Add($"Me: {msg}");
-            }
-            else
-            {
-                writer.WriteLine($"PRIVATE|{selectedTarget}|{msg}");
-                lstChatBox.Items.Add($"Me (riêng tới {selectedTarget}): {msg}");
-            }
+            txtTenNguoiDung.Enabled = false;
+            txtDiaChi.Enabled = false;
+            txtCong.Enabled = false;
+            btnNgatKetNoi.Enabled = true;
+            CapNhatTrangThai("Đã kết nối, đang tham gia phòng chat...");
+            ChatHelper.GhiChat(rtbChat, $"[Hệ thống] Đã kết nối tới {diemCuoi}.");
 
-            txtMessage.Clear();
+            await boGhi.WriteLineAsync("TEN\t" + ten);
+            _ = DocDuLieuAsync(nguonHuy.Token);
         }
-
-        private void ReceiveMessages()
+        catch (Exception ex)
         {
-            try
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    line = line.TrimStart('\uFEFF', '\u200B').Trim();
-                    if (string.IsNullOrEmpty(line)) continue;
-
-                    string[] parts = line.Split(new[] { '|' }, 2);
-                    string type = parts[0];
-                    string content = parts.Length > 1 ? parts[1] : "";
-
-                    if (type == "MSG")
-                    {
-                        lstChatBox.Items.Add(content);
-                    }
-                    else if (type == "USERS")
-                    {
-                        lstParticipants.Items.Clear();
-                        lstParticipants.Items.Add("All (Chat chung)");
-
-                        string[] users = content.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                        foreach (string u in users)
-                        {
-                            if (u != myName)
-                            {
-                                lstParticipants.Items.Add(u);
-                            }
-                        }
-                        lstParticipants.SelectedIndex = 0;
-                    }
-                }
-            }
-            catch
-            {
-                lstChatBox.Items.Add("You left the group.");
-            }
-        }
-
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
-            try
-            {
-                tcpClient?.Close();
-            }
-            catch { }
+            ChatHelper.GhiChat(rtbChat, "[Hệ thống] Không thể kết nối: " + ex.Message);
+            NgatKetNoi();
+            CapNhatTrangThai("Kết nối thất bại.");
         }
     }
+
+    private async Task DocDuLieuAsync(CancellationToken token)
+    {
+        try
+        {
+            while (!token.IsCancellationRequested && boDoc is not null)
+            {
+                var dong = await boDoc.ReadLineAsync(token);
+                if (dong is null)
+                {
+                    break;
+                }
+
+                if (dong.StartsWith("TEN_OK\t"))
+                {
+                    tenCuaToi = dong[7..];
+                    Text = "Chat - " + tenCuaToi;
+                    ChatHelper.GhiChat(rtbChat, $"[Hệ thống] Xin chào {tenCuaToi}!");
+                    CapNhatTrangThai($"Đã tham gia phòng chat với tên {tenCuaToi}.");
+                    CapNhatNut();
+                    continue;
+                }
+
+                if (dong.StartsWith("LOI\t"))
+                {
+                    var thongBao = dong[4..];
+                    ChatHelper.GhiChat(rtbChat, "[Hệ thống] " + thongBao);
+                    MessageBox.Show(this, thongBao, "Không thể tham gia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    NgatKetNoi();
+                    return;
+                }
+
+                if (dong.StartsWith("MSG\t"))
+                {
+                    ChatHelper.GhiChat(rtbChat, dong[4..]);
+                    continue;
+                }
+
+                if (dong.StartsWith("USERS\t"))
+                {
+                    CapNhatNguoiDung(dong[6..]);
+                }
+            }
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+        }
+        catch (Exception ex) when (ex is IOException or SocketException or ObjectDisposedException)
+        {
+            if (!token.IsCancellationRequested)
+            {
+                ChatHelper.GhiChat(rtbChat, "[Hệ thống] Mất kết nối: " + ex.Message);
+            }
+        }
+        finally
+        {
+            if (!token.IsCancellationRequested)
+            {
+                ChatHelper.GhiChat(rtbChat, "[Hệ thống] Server đã đóng kết nối.");
+                NgatKetNoi();
+            }
+        }
+    }
+
+    private void CapNhatNguoiDung(string danhSach)
+    {
+        var dsTen = danhSach
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .ToList();
+
+        lstNguoiDung.BeginUpdate();
+        lstNguoiDung.Items.Clear();
+        foreach (var ten in dsTen)
+        {
+            lstNguoiDung.Items.Add(ten == tenCuaToi ? ten + " (bạn)" : ten);
+        }
+        lstNguoiDung.EndUpdate();
+
+        var nguoiNhanDangChon = cmbNguoiNhan.SelectedItem as string;
+        cmbNguoiNhan.BeginUpdate();
+        cmbNguoiNhan.Items.Clear();
+        cmbNguoiNhan.Items.Add("Mọi người");
+        foreach (var ten in dsTen.Where(ten => ten != tenCuaToi))
+        {
+            cmbNguoiNhan.Items.Add(ten);
+        }
+        cmbNguoiNhan.EndUpdate();
+
+        if (nguoiNhanDangChon is not null && cmbNguoiNhan.Items.Contains(nguoiNhanDangChon))
+        {
+            cmbNguoiNhan.SelectedItem = nguoiNhanDangChon;
+        }
+        else if (cmbNguoiNhan.Items.Count > 0)
+        {
+            cmbNguoiNhan.SelectedIndex = 0;
+        }
+
+        lblTongNguoi.Text = $"{dsTen.Count} người trong phòng";
+    }
+
+    private async void btnGui_Click(object sender, EventArgs e)
+    {
+        if (boGhi is null || tenCuaToi is null)
+        {
+            CapNhatTrangThai("Chưa kết nối tới Server.");
+            return;
+        }
+
+        var noiDung = ChatHelper.ChuanHoaTinNhan(txtNoiDung.Text);
+        if (noiDung.Length == 0)
+        {
+            txtNoiDung.Focus();
+            return;
+        }
+
+        var nguoiNhan = cmbNguoiNhan.SelectedItem as string;
+        var dong = string.IsNullOrEmpty(nguoiNhan) || nguoiNhan == "Mọi người"
+            ? "PUBLIC\t" + noiDung
+            : $"PRIVATE\t{nguoiNhan}\t{noiDung}";
+
+        try
+        {
+            await boGhi.WriteLineAsync(dong);
+            txtNoiDung.Clear();
+            txtNoiDung.Focus();
+            CapNhatTrangThai("Đã gửi tin nhắn.");
+        }
+        catch (Exception ex) when (ex is IOException or SocketException or ObjectDisposedException)
+        {
+            ChatHelper.GhiChat(rtbChat, "[Hệ thống] Gửi tin nhắn thất bại: " + ex.Message);
+            NgatKetNoi();
+        }
+    }
+
+    private async void btnNgatKetNoi_Click(object sender, EventArgs e)
+    {
+        if (boGhi is not null)
+        {
+            try
+            {
+                await boGhi.WriteLineAsync("QUIT");
+            }
+            catch (Exception ex) when (ex is IOException or SocketException or ObjectDisposedException)
+            {
+            }
+        }
+
+        NgatKetNoi();
+    }
+
+    private void NgatKetNoi()
+    {
+        var daKetNoi = tcpClient is not null;
+
+        nguonHuy?.Cancel();
+        boGhi?.Dispose();
+        boDoc?.Dispose();
+        tcpClient?.Close();
+
+        boGhi = null;
+        boDoc = null;
+        tcpClient = null;
+        nguonHuy = null;
+        tenCuaToi = null;
+
+        if (IsDisposed)
+        {
+            return;
+        }
+
+        lstNguoiDung.Items.Clear();
+        cmbNguoiNhan.Items.Clear();
+        cmbNguoiNhan.Items.Add("Mọi người");
+        cmbNguoiNhan.SelectedIndex = 0;
+        lblTongNguoi.Text = "0 người trong phòng";
+        txtTenNguoiDung.Enabled = true;
+        txtDiaChi.Enabled = true;
+        txtCong.Enabled = true;
+        btnKetNoi.Enabled = true;
+        Text = "TCP Client - Bài 06";
+        CapNhatNut();
+        CapNhatTrangThai(daKetNoi ? "Đã ngắt kết nối." : "Chưa kết nối.");
+    }
+
+    private void CapNhatNut()
+    {
+        var daVaoPhong = tcpClient is not null && tenCuaToi is not null;
+
+        txtNoiDung.Enabled = daVaoPhong;
+        cmbNguoiNhan.Enabled = daVaoPhong;
+        btnGui.Enabled = daVaoPhong;
+        btnNgatKetNoi.Enabled = tcpClient is not null;
+    }
+
+    private void CapNhatTrangThai(string noiDung)
+    {
+        if (!IsDisposed)
+        {
+            lblTrangThai.Text = noiDung;
+        }
+    }
+
+    private void Bai06Client_FormClosing(object sender, FormClosingEventArgs e) => NgatKetNoi();
 }
