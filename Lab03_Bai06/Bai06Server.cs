@@ -248,6 +248,61 @@ public partial class Bai06Server : Form
                     break;
                 }
 
+            case "FILE" when phan.Length >= 4:
+                {
+                    var nguoiNhan = ChatHelper.ChuanHoaTen(phan[1]);
+                    var tenTep = ChatHelper.ChuanHoaTen(Path.GetFileName(phan[2]));
+                    var duLieu = phan[3];
+
+                    if (!ChatHelper.LaTepChoPhep(tenTep))
+                    {
+                        await GuiDongAsync(
+                            ketNoi,
+                            "MSG\t[Hệ thống] Chỉ hỗ trợ ảnh .jpg, .jpeg, .png và tệp .txt.");
+                        return;
+                    }
+
+                    if (duLieu.Length > ChatHelper.KichThuocBase64ToiDa)
+                    {
+                        await GuiDongAsync(
+                            ketNoi,
+                            "MSG\t[Hệ thống] Tệp quá lớn. Giới hạn 5 MB.");
+                        return;
+                    }
+
+                    if (nguoiNhan.Length == 0 || nguoiNhan == "*")
+                    {
+                        ChatHelper.GhiNhatKy(rtbNhatKy, $"{ketNoi.Ten} gửi tệp: {tenTep}");
+                        await GuiTepChoTatCaAsync($"FILE\t{ketNoi.Ten}\t{tenTep}\t{duLieu}\tPUBLIC");
+                        return;
+                    }
+
+                    KetNoiClient? dich;
+                    lock (khoa)
+                    {
+                        dsNguoiDung.TryGetValue(nguoiNhan, out dich);
+                    }
+
+                    if (dich is null)
+                    {
+                        await GuiDongAsync(
+                            ketNoi,
+                            $"MSG\t[Hệ thống] Không tìm thấy người dùng \"{nguoiNhan}\".");
+                        return;
+                    }
+
+                    ChatHelper.GhiNhatKy(
+                        rtbNhatKy,
+                        $"[Riêng] {ketNoi.Ten} -> {nguoiNhan} gửi tệp: {tenTep}");
+                    await GuiDongAsync(
+                        ketNoi,
+                        $"FILE\t{ketNoi.Ten}\t{tenTep}\t{duLieu}\tPRIVATE");
+                    await GuiDongAsync(
+                        dich,
+                        $"FILE\t{ketNoi.Ten}\t{tenTep}\t{duLieu}\tPRIVATE");
+                    break;
+                }
+
             case "QUIT":
                 ketNoi.Client.Close();
                 break;
@@ -281,6 +336,20 @@ public partial class Bai06Server : Form
         foreach (var ketNoi in danhSach)
         {
             await GuiDongAsync(ketNoi, "MSG\t" + noiDung);
+        }
+    }
+
+    private async Task GuiTepChoTatCaAsync(string dong)
+    {
+        List<KetNoiClient> danhSach;
+        lock (khoa)
+        {
+            danhSach = dsNguoiDung.Values.ToList();
+        }
+
+        foreach (var ketNoi in danhSach)
+        {
+            await GuiDongAsync(ketNoi, dong);
         }
     }
 

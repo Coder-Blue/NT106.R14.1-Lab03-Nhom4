@@ -40,6 +40,7 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             btnNgatKetNoi = new Button();
             grpChat = new GroupBox();
             rtbChat = new RichTextBox();
+            picAnh = new PictureBox();
             grpNguoiDung = new GroupBox();
             lstNguoiDung = new ListBox();
             lblTongNguoi = new Label();
@@ -48,8 +49,11 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             cmbNguoiNhan = new ComboBox();
             txtNoiDung = new TextBox();
             btnGui = new Button();
+            btnGuiTep = new Button();
+            lblGoiY = new Label();
             lblTrangThai = new Label();
             grpChat.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picAnh).BeginInit();
             grpNguoiDung.SuspendLayout();
             grpGui.SuspendLayout();
             SuspendLayout();
@@ -172,6 +176,7 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             //
             // grpChat
             //
+            grpChat.Controls.Add(picAnh);
             grpChat.Controls.Add(rtbChat);
             grpChat.Font = new Font("Segoe UI", 10F);
             grpChat.Location = new Point(24, 136);
@@ -194,6 +199,18 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             rtbChat.Size = new Size(682, 480);
             rtbChat.TabIndex = 0;
             rtbChat.Text = "";
+            //
+            // picAnh
+            //
+            picAnh.BackColor = Color.White;
+            picAnh.BorderStyle = BorderStyle.FixedSingle;
+            picAnh.Location = new Point(14, 388);
+            picAnh.Name = "picAnh";
+            picAnh.Size = new Size(682, 118);
+            picAnh.SizeMode = PictureBoxSizeMode.Zoom;
+            picAnh.TabIndex = 1;
+            picAnh.TabStop = false;
+            picAnh.Visible = false;
             //
             // grpNguoiDung
             //
@@ -230,6 +247,8 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             //
             // grpGui
             //
+            grpGui.Controls.Add(lblGoiY);
+            grpGui.Controls.Add(btnGuiTep);
             grpGui.Controls.Add(lblNguoiNhan);
             grpGui.Controls.Add(cmbNguoiNhan);
             grpGui.Controls.Add(txtNoiDung);
@@ -281,13 +300,41 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             btnGui.FlatStyle = FlatStyle.Flat;
             btnGui.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             btnGui.ForeColor = Color.White;
-            btnGui.Location = new Point(14, 142);
+            btnGui.Location = new Point(167, 142);
             btnGui.Name = "btnGui";
-            btnGui.Size = new Size(300, 44);
+            btnGui.Size = new Size(147, 42);
             btnGui.TabIndex = 3;
             btnGui.Text = "Gửi";
             btnGui.UseVisualStyleBackColor = false;
             btnGui.Click += btnGui_Click;
+            //
+            // btnGuiTep
+            //
+            btnGuiTep.BackColor = Color.FromArgb(46, 160, 100);
+            btnGuiTep.Cursor = Cursors.Hand;
+            btnGuiTep.FlatAppearance.BorderSize = 0;
+            btnGuiTep.FlatAppearance.MouseDownBackColor = Color.FromArgb(35, 125, 75);
+            btnGuiTep.FlatAppearance.MouseOverBackColor = Color.FromArgb(60, 180, 115);
+            btnGuiTep.FlatStyle = FlatStyle.Flat;
+            btnGuiTep.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            btnGuiTep.ForeColor = Color.White;
+            btnGuiTep.Location = new Point(14, 142);
+            btnGuiTep.Name = "btnGuiTep";
+            btnGuiTep.Size = new Size(145, 42);
+            btnGuiTep.TabIndex = 4;
+            btnGuiTep.Text = "Gửi file/ảnh";
+            btnGuiTep.UseVisualStyleBackColor = false;
+            btnGuiTep.Click += btnGuiTep_Click;
+            //
+            // lblGoiY
+            //
+            lblGoiY.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
+            lblGoiY.ForeColor = Color.FromArgb(120, 120, 120);
+            lblGoiY.Location = new Point(14, 188);
+            lblGoiY.Name = "lblGoiY";
+            lblGoiY.Size = new Size(300, 18);
+            lblGoiY.TabIndex = 5;
+            lblGoiY.Text = "Hỗ trợ .jpg, .jpeg, .png, .txt (tối đa 5 MB).";
             //
             // lblTrangThai
             //
@@ -327,6 +374,7 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             Text = "TCP Client - Bài 06";
             FormClosing += Bai06Client_FormClosing;
             grpChat.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)picAnh).EndInit();
             grpNguoiDung.ResumeLayout(false);
             grpGui.ResumeLayout(false);
             grpGui.PerformLayout();
@@ -348,6 +396,7 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
         private Button btnNgatKetNoi;
         private GroupBox grpChat;
         private RichTextBox rtbChat;
+        private PictureBox picAnh;
         private GroupBox grpNguoiDung;
         private ListBox lstNguoiDung;
         private Label lblTongNguoi;
@@ -356,6 +405,8 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
         private ComboBox cmbNguoiNhan;
         private TextBox txtNoiDung;
         private Button btnGui;
+        private Button btnGuiTep;
+        private Label lblGoiY;
         private Label lblTrangThai;
     }
 }

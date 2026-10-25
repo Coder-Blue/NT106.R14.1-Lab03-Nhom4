@@ -8,6 +8,8 @@ public static class ChatHelper
 {
     public const string DiaChiMacDinh = "127.0.0.1";
     public const int CongMacDinh = 8083;
+    public const long KichThuocTepToiDa = 5 * 1024 * 1024;
+    public const int KichThuocBase64ToiDa = 8 * 1024 * 1024;
 
     public static string ChuanHoaTen(string ten) =>
         ten.Replace('\t', ' ').Replace('\r', ' ').Replace('\n', ' ').Replace(',', ' ').Trim();
@@ -17,7 +19,30 @@ public static class ChatHelper
 
     public static bool TenHopLe(string ten) => ten.Length is >= 1 and <= 30;
 
+    public static bool LaAnh(string tenTep)
+    {
+        var duoi = Path.GetExtension(tenTep);
+        return duoi.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
+               duoi.Equals(".jpeg", StringComparison.OrdinalIgnoreCase) ||
+               duoi.Equals(".png", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static bool LaTepChoPhep(string tenTep) =>
+        LaAnh(tenTep) || Path.GetExtension(tenTep).Equals(".txt", StringComparison.OrdinalIgnoreCase);
+
     public static string GioHienTai() => DateTime.Now.ToString("HH:mm:ss");
+
+    public static Image? TaiHinh(string duongDan)
+    {
+        if (!File.Exists(duongDan))
+        {
+            return null;
+        }
+
+        using var luong = new FileStream(duongDan, FileMode.Open, FileAccess.Read);
+        using var hinh = Image.FromStream(luong);
+        return new Bitmap(hinh);
+    }
 
     public static (bool HopLe, IPEndPoint? DiemCuoi) DocDiemCuoi(string diaChi, string cong)
     {
@@ -77,9 +102,11 @@ public static class ChatHelper
 
         var mauChu = noiDung.Contains("[Riêng]", StringComparison.Ordinal)
             ? Color.FromArgb(35, 125, 75)
-            : noiDung.Contains("[Hệ thống]", StringComparison.Ordinal)
-                ? Color.Gray
-                : Color.FromArgb(35, 35, 35);
+            : noiDung.Contains("[Tệp", StringComparison.Ordinal)
+                ? Color.FromArgb(51, 122, 183)
+                : noiDung.Contains("[Hệ thống]", StringComparison.Ordinal)
+                    ? Color.Gray
+                    : Color.FromArgb(35, 35, 35);
 
         richTextBox.SelectionStart = richTextBox.TextLength;
         richTextBox.SelectionLength = 0;

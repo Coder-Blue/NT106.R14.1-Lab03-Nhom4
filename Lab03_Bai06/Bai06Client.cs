@@ -106,6 +106,12 @@ public partial class Bai06Client : Form
                     continue;
                 }
 
+                if (dong.StartsWith("FILE\t"))
+                {
+                    NhanTep(dong);
+                    continue;
+                }
+
                 if (dong.StartsWith("USERS\t"))
                 {
                     CapNhatNguoiDung(dong[6..]);
@@ -202,6 +208,108 @@ public partial class Bai06Client : Form
         }
     }
 
+    private async void btnGuiTep_Click(object sender, EventArgs e)
+    {
+        if (boGhi is null || tenCuaToi is null)
+        {
+            CapNhatTrangThai("Chưa kết nối tới Server.");
+            return;
+        }
+
+        using var hopThoai = new OpenFileDialog
+        {
+            Title = "Chọn ảnh hoặc tệp văn bản",
+            Filter = "Ảnh và tệp văn bản|*.jpg;*.jpeg;*.png;*.txt|Ảnh|*.jpg;*.jpeg;*.png|Tệp văn bản|*.txt",
+        };
+
+        if (hopThoai.ShowDialog(this) != DialogResult.OK)
+        {
+            return;
+        }
+
+        var tep = new FileInfo(hopThoai.FileName);
+        if (!tep.Exists)
+        {
+            MessageBox.Show(this, "Không tìm thấy tệp đã chọn.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        if (!ChatHelper.LaTepChoPhep(tep.Name))
+        {
+            MessageBox.Show(this, "Chỉ hỗ trợ ảnh .jpg, .jpeg, .png và tệp .txt.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        if (tep.Length > ChatHelper.KichThuocTepToiDa)
+        {
+            MessageBox.Show(this, "Tệp vượt quá giới hạn 5 MB.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
+        try
+        {
+            var duLieu = Convert.ToBase64String(await File.ReadAllBytesAsync(tep.FullName));
+            var nguoiNhan = cmbNguoiNhan.SelectedItem as string;
+            var dich = string.IsNullOrEmpty(nguoiNhan) || nguoiNhan == "Mọi người" ? "*" : nguoiNhan;
+            await boGhi.WriteLineAsync($"FILE\t{dich}\t{ChatHelper.ChuanHoaTen(tep.Name)}\t{duLieu}");
+            CapNhatTrangThai("Đang gửi tệp...");
+        }
+        catch (Exception ex) when (ex is IOException or SocketException or ObjectDisposedException or UnauthorizedAccessException)
+        {
+            ChatHelper.GhiChat(rtbChat, "[Hệ thống] Gửi tệp thất bại: " + ex.Message);
+        }
+    }
+
+    private void NhanTep(string dong)
+    {
+        var phan = dong.Split('\t');
+        if (phan.Length < 5)
+        {
+            return;
+        }
+
+        try
+        {
+            var nguoiGui = phan[1];
+            var tenTep = Path.GetFileName(phan[2]);
+            var duLieu = Convert.FromBase64String(phan[3]);
+            var cheDo = phan[4];
+
+            var thuMuc = Path.Combine(AppContext.BaseDirectory, "tep-nhan-duoc");
+            Directory.CreateDirectory(thuMuc);
+            var tenLuu = $"{DateTime.Now:yyyyMMdd-HHmmss-fff}_{tenTep}";
+            var duongDan = Path.Combine(thuMuc, tenLuu);
+            File.WriteAllBytes(duongDan, duLieu);
+
+            var nguoiHienThi = nguoiGui == tenCuaToi ? "Bạn" : nguoiGui;
+            var loai = ChatHelper.LaAnh(tenTep) ? "ảnh" : "tệp";
+            var rieng = cheDo == "PRIVATE" ? " riêng" : "";
+            ChatHelper.GhiChat(
+                rtbChat,
+                $"[{ChatHelper.GioHienTai()}] [Tệp{rieng}] {nguoiHienThi} đã gửi {loai}: {tenTep}");
+            ChatHelper.GhiChat(rtbChat, $"[Hệ thống] Đã lưu tệp vào: {duongDan}");
+
+            if (ChatHelper.LaAnh(tenTep))
+            {
+                HienThiAnh(duongDan);
+            }
+        }
+        catch (Exception ex)
+        {
+            ChatHelper.GhiChat(rtbChat, "[Hệ thống] Không thể nhận tệp: " + ex.Message);
+        }
+    }
+
+    private void HienThiAnh(string duongDan)
+    {
+        var hinhMoi = ChatHelper.TaiHinh(duongDan);
+        var hinhCu = picAnh.Image;
+        picAnh.Image = hinhMoi;
+        picAnh.Visible = hinhMoi is not null;
+        rtbChat.Height = hinhMoi is not null ? 350 : 480;
+        hinhCu?.Dispose();
+    }
+
     private async void btnNgatKetNoi_Click(object sender, EventArgs e)
     {
         if (boGhi is not null)
@@ -243,6 +351,12 @@ public partial class Bai06Client : Form
         cmbNguoiNhan.Items.Add("Mọi người");
         cmbNguoiNhan.SelectedIndex = 0;
         lblTongNguoi.Text = "0 người trong phòng";
+
+        var hinhCu = picAnh.Image;
+        picAnh.Image = null;
+        picAnh.Visible = false;
+        rtbChat.Height = 480;
+        hinhCu?.Dispose();
         txtTenNguoiDung.Enabled = true;
         txtDiaChi.Enabled = true;
         txtCong.Enabled = true;
@@ -259,6 +373,7 @@ public partial class Bai06Client : Form
         txtNoiDung.Enabled = daVaoPhong;
         cmbNguoiNhan.Enabled = daVaoPhong;
         btnGui.Enabled = daVaoPhong;
+        btnGuiTep.Enabled = daVaoPhong;
         btnNgatKetNoi.Enabled = tcpClient is not null;
     }
 
