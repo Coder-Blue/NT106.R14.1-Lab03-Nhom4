@@ -91,19 +91,21 @@ namespace NT106.R14._1_Lab03_Nhom4
             //
             // btnBai02
             //
-            btnBai02.BackColor = Color.FromArgb(236, 240, 245);
-            btnBai02.Cursor = Cursors.Default;
-            btnBai02.Enabled = false;
+            btnBai02.BackColor = Color.FromArgb(51, 122, 183);
+            btnBai02.Cursor = Cursors.Hand;
             btnBai02.FlatAppearance.BorderSize = 0;
+            btnBai02.FlatAppearance.MouseDownBackColor = Color.FromArgb(40, 96, 145);
+            btnBai02.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 138, 204);
             btnBai02.FlatStyle = FlatStyle.Flat;
             btnBai02.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            btnBai02.ForeColor = Color.FromArgb(120, 130, 140);
+            btnBai02.ForeColor = Color.White;
             btnBai02.Location = new Point(350, 190);
             btnBai02.Name = "btnBai02";
             btnBai02.Size = new Size(280, 112);
             btnBai02.TabIndex = 4;
             btnBai02.Text = "Bài 02\nTelnet Server";
             btnBai02.UseVisualStyleBackColor = false;
+            btnBai02.Click += btnBai02_Click;
             //
             // btnBai03
             //
@@ -161,19 +163,21 @@ namespace NT106.R14._1_Lab03_Nhom4
             //
             // btnBai06
             //
-            btnBai06.BackColor = Color.FromArgb(236, 240, 245);
-            btnBai06.Cursor = Cursors.Default;
-            btnBai06.Enabled = false;
+            btnBai06.BackColor = Color.FromArgb(51, 122, 183);
+            btnBai06.Cursor = Cursors.Hand;
             btnBai06.FlatAppearance.BorderSize = 0;
+            btnBai06.FlatAppearance.MouseDownBackColor = Color.FromArgb(40, 96, 145);
+            btnBai06.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 138, 204);
             btnBai06.FlatStyle = FlatStyle.Flat;
             btnBai06.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            btnBai06.ForeColor = Color.FromArgb(120, 130, 140);
+            btnBai06.ForeColor = Color.White;
             btnBai06.Location = new Point(660, 330);
             btnBai06.Name = "btnBai06";
             btnBai06.Size = new Size(280, 112);
             btnBai06.TabIndex = 8;
             btnBai06.Text = "Bài 06\nChat Room";
             btnBai06.UseVisualStyleBackColor = false;
+            btnBai06.Click += btnBai06_Click;
             //
             // lblGhiChu
             //
@@ -183,7 +187,7 @@ namespace NT106.R14._1_Lab03_Nhom4
             lblGhiChu.Name = "lblGhiChu";
             lblGhiChu.Size = new Size(980, 24);
             lblGhiChu.TabIndex = 9;
-            lblGhiChu.Text = "Bài 03, 04 và 05 đã hoàn thành. Bài 06 sẽ được cập nhật sau.";
+            lblGhiChu.Text = "Bài 02, 03, 04, 05 và 06 đã hoàn thành.";
             lblGhiChu.TextAlign = ContentAlignment.MiddleCenter;
             //
             // FormChinh

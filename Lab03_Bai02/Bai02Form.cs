@@ -6,86 +6,145 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai02;
 
 public partial class Bai02Form : Form
 {
-    private const int ListenPort = 8080;
+    private readonly object khoa = new();
+    private readonly List<Socket> dsClient = new();
 
-    private Socket? listenerSocket;
-    private volatile bool isListening;
+    private Socket? listener;
+    private CancellationTokenSource? nguonHuy;
 
-    public Bai02Form() => InitializeComponent();
-
-    private void btnListen_Click(object sender, EventArgs e)
+    public Bai02Form()
     {
-        try
+        InitializeComponent();
+        CapNhatTrangThai("Chưa lắng nghe. Bấm Listen để bắt đầu.");
+    }
+
+    private async void btnListen_Click(object sender, EventArgs e)
+    {
+        if (nguonHuy is not null)
         {
-            listenerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            listenerSocket.Bind(new IPEndPoint(IPAddress.Any, ListenPort));
-            listenerSocket.Listen(10);
-        }
-        catch (SocketException ex)
-        {
-            listenerSocket?.Close();
-            MessageBox.Show(
-                $"Không mở được port {ListenPort}: {ex.Message}\n\nHãy tắt chương trình khác đang dùng port này (ví dụ TCP Server của Bài 03).",
-                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            DungLangNghe();
             return;
         }
 
-        isListening = true;
-        btnListen.Enabled = false;
-
-        string localIp = GetLocalIPv4();
-        AppendLog($"Telnet running on {localIp}:{ListenPort}");
-        lblStatus.Text = $"Đang lắng nghe. Mở CMD và gõ: telnet {localIp} {ListenPort}";
-
-        new Thread(AcceptLoop) { IsBackground = true }.Start();
+        await ChayLangNgheAsync();
     }
 
-    private void AcceptLoop()
+    private async Task ChayLangNgheAsync()
     {
+        var nguon = new CancellationTokenSource();
+        nguonHuy = nguon;
+        listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
         try
         {
-            while (isListening)
+            listener.Bind(new IPEndPoint(IPAddress.Any, TelnetHelper.CongMacDinh));
+            listener.Listen(10);
+            btnListen.Text = "Stop";
+            TelnetHelper.GhiNhatKy(rtbNhatKy, "Telnet listener started on port " + TelnetHelper.CongMacDinh);
+            CapNhatTrangThai();
+
+            while (!nguon.IsCancellationRequested)
             {
-                Socket clientSocket = listenerSocket!.Accept();
-                new Thread(() => HandleClient(clientSocket)) { IsBackground = true }.Start();
+                var client = await listener.AcceptAsync(nguon.Token);
+                lock (khoa)
+                {
+                    dsClient.Add(client);
+                }
+
+                _ = XuLyClientAsync(client, nguon.Token);
+                CapNhatSoClient();
             }
         }
-        catch (SocketException) when (!isListening) { }
-        catch (ObjectDisposedException) { }
+        catch (OperationCanceledException) when (nguon.IsCancellationRequested)
+        {
+        }
+        catch (ObjectDisposedException) when (nguon.IsCancellationRequested)
+        {
+        }
+        catch (SocketException) when (nguon.IsCancellationRequested)
+        {
+        }
+        catch (Exception ex)
+        {
+            TelnetHelper.GhiNhatKy(rtbNhatKy, "Lỗi: " + ex.Message);
+
+            if (!IsDisposed)
+            {
+                MessageBox.Show(
+                    this,
+                    $"Không mở được port {TelnetHelper.CongMacDinh}: {ex.Message}\n\n" +
+                    "Hãy tắt chương trình khác đang dùng port này (ví dụ TCP Server của Bài 03).",
+                    "Lỗi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+        }
+        finally
+        {
+            DongTatCaClient();
+            listener?.Close();
+            listener = null;
+            nguonHuy = null;
+            nguon.Dispose();
+
+            if (!IsDisposed)
+            {
+                btnListen.Text = "Listen";
+                CapNhatTrangThai("Server đã dừng.");
+            }
+        }
     }
 
-    private void HandleClient(Socket clientSocket)
+    private async Task XuLyClientAsync(Socket clientSocket, CancellationToken token)
     {
-        string clientAddress = clientSocket.RemoteEndPoint?.ToString() ?? "unknown";
-        AppendLog($"New client connected: {clientAddress}");
+        var diaChi = clientSocket.RemoteEndPoint?.ToString() ?? "unknown";
+        TelnetHelper.GhiNhatKy(rtbNhatKy, $"New client connected: {diaChi}");
 
         var buffer = new byte[1024];
         var lineBytes = new List<byte>();
-        int bytesToSkip = 0; // bỏ qua các byte thương lượng của Telnet (IAC = 0xFF + 2 byte)
+        var bytesToSkip = 0; // bỏ qua các byte thương lượng Telnet (IAC + 2 byte)
 
         try
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                int bytesReceived = clientSocket.Receive(buffer);
-                if (bytesReceived == 0) break; // client đã ngắt kết nối
-
-                for (int i = 0; i < bytesReceived; i++)
+                var bytesReceived = await clientSocket.ReceiveAsync(buffer.AsMemory(), SocketFlags.None, token);
+                if (bytesReceived == 0)
                 {
-                    byte current = buffer[i];
+                    break;
+                }
 
-                    if (bytesToSkip > 0) { bytesToSkip--; continue; }
-                    if (current == 0xFF) { bytesToSkip = 2; continue; }
+                for (var i = 0; i < bytesReceived; i++)
+                {
+                    var current = buffer[i];
+
+                    if (bytesToSkip > 0)
+                    {
+                        bytesToSkip--;
+                        continue;
+                    }
+
+                    if (current == 0xFF)
+                    {
+                        bytesToSkip = 2;
+                        continue;
+                    }
 
                     if (current == (byte)'\n')
                     {
-                        string text = Encoding.UTF8.GetString(lineBytes.ToArray()).Trim('\r');
+                        var text = Encoding.UTF8.GetString(lineBytes.ToArray()).Trim('\r');
                         lineBytes.Clear();
-                        if (text.Length > 0) AppendLog($"{clientAddress}: {text}");
+                        if (text.Length > 0)
+                        {
+                            TelnetHelper.GhiNhatKy(rtbNhatKy, $"{diaChi}: {text}");
+                        }
                     }
-                    else if (current is 0x08 or 0x7F) // phím Backspace
+                    else if (current is 0x08 or 0x7F)
                     {
-                        if (lineBytes.Count > 0) lineBytes.RemoveAt(lineBytes.Count - 1);
+                        if (lineBytes.Count > 0)
+                        {
+                            lineBytes.RemoveAt(lineBytes.Count - 1);
+                        }
                     }
                     else
                     {
@@ -94,51 +153,108 @@ public partial class Bai02Form : Form
                 }
             }
         }
-        catch (SocketException) { }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+        }
+        catch (Exception ex) when (ex is SocketException or ObjectDisposedException)
+        {
+            if (!token.IsCancellationRequested)
+            {
+                TelnetHelper.GhiNhatKy(rtbNhatKy, $"Mất kết nối với {diaChi}: {ex.Message}");
+            }
+        }
         finally
         {
-            clientSocket.Close();
-            AppendLog($"Client disconnected: {clientAddress}");
-        }
-    }
-
-    private static string GetLocalIPv4()
-    {
-        try
-        {
-            return Dns.GetHostEntry(Dns.GetHostName()).AddressList
-                .FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)?.ToString() ?? "127.0.0.1";
-        }
-        catch (SocketException)
-        {
-            return "127.0.0.1";
-        }
-    }
-
-    private void AppendLog(string message)
-    {
-        if (IsDisposed) return;
-
-        try
-        {
-            if (lvCommand.InvokeRequired)
+            lock (khoa)
             {
-                lvCommand.Invoke(new Action<string>(AppendLog), message);
-                return;
+                dsClient.Remove(clientSocket);
             }
 
-            var item = new ListViewItem($"[{DateTime.Now:HH:mm:ss}] {message}");
-            lvCommand.Items.Add(item);
-            item.EnsureVisible();
+            clientSocket.Close();
+            TelnetHelper.GhiNhatKy(rtbNhatKy, $"Client disconnected: {diaChi}");
+            CapNhatSoClient();
         }
-        catch (ObjectDisposedException) { }
-        catch (InvalidOperationException) { }
     }
 
-    protected override void OnFormClosing(FormClosingEventArgs e)
+    private void CapNhatSoClient()
     {
-        isListening = false;
-        listenerSocket?.Close();
-        base.OnFormClosing(e);
+        if (InvokeRequired)
+        {
+            BeginInvoke(CapNhatSoClient);
+            return;
+        }
+
+        if (!IsDisposed)
+        {
+            CapNhatTrangThai();
+        }
     }
+
+    private void CapNhatTrangThai(string? thongBao = null)
+    {
+        if (InvokeRequired)
+        {
+            BeginInvoke(() => CapNhatTrangThai(thongBao));
+            return;
+        }
+
+        if (IsDisposed)
+        {
+            return;
+        }
+
+        if (thongBao is not null)
+        {
+            lblTrangThai.Text = thongBao;
+            return;
+        }
+
+        int soClient;
+        lock (khoa)
+        {
+            soClient = dsClient.Count;
+        }
+
+        var diaChi = TelnetHelper.LayIpv4();
+        lblTrangThai.Text =
+            $"Đang lắng nghe tại {diaChi}:{TelnetHelper.CongMacDinh} - {soClient} client. " +
+            $"Mở CMD và gõ: telnet {diaChi} {TelnetHelper.CongMacDinh}";
+    }
+
+    private void DongTatCaClient()
+    {
+        List<Socket> danhSach;
+        lock (khoa)
+        {
+            danhSach = dsClient.ToList();
+            dsClient.Clear();
+        }
+
+        foreach (var client in danhSach)
+        {
+            try
+            {
+                client.Close();
+            }
+            catch
+            {
+            }
+        }
+    }
+
+    private void DungLangNghe()
+    {
+        if (nguonHuy is null)
+        {
+            return;
+        }
+
+        btnListen.Text = "Đang dừng...";
+        nguonHuy.Cancel();
+        listener?.Close();
+        DongTatCaClient();
+        CapNhatSoClient();
+    }
+
+    private void Bai02Form_FormClosing(object sender, FormClosingEventArgs e) => DungLangNghe();
 }

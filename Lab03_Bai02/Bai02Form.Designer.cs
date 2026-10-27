@@ -3,12 +3,12 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai02;
 partial class Bai02Form
 {
     /// <summary>
-    /// Required designer variable.
+    ///  Required designer variable.
     /// </summary>
     private System.ComponentModel.IContainer components = null;
 
     /// <summary>
-    /// Clean up any resources being used.
+    ///  Clean up any resources being used.
     /// </summary>
     /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
     protected override void Dispose(bool disposing)
@@ -23,103 +23,120 @@ partial class Bai02Form
     #region Windows Form Designer generated code
 
     /// <summary>
-    /// Required method for Designer support - do not modify
-    /// the contents of this method with the code editor.
+    ///  Required method for Designer support - do not modify
+    ///  the contents of this method with the code editor.
     /// </summary>
     private void InitializeComponent()
     {
-        lblTitle = new Label();
-        lblSubtitle = new Label();
+        lblTieuDe = new Label();
+        lblMoTa = new Label();
         btnListen = new Button();
-        lvCommand = new ListView();
-        lblStatus = new Label();
+        grpNhatKy = new GroupBox();
+        rtbNhatKy = new RichTextBox();
+        lblTrangThai = new Label();
+        grpNhatKy.SuspendLayout();
         SuspendLayout();
-        // 
-        // lblTitle
-        // 
-        lblTitle.AutoSize = true;
-        lblTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-        lblTitle.ForeColor = Color.FromArgb(31, 78, 121);
-        lblTitle.Location = new Point(25, 18);
-        lblTitle.Name = "lblTitle";
-        lblTitle.Size = new Size(316, 48);
-        lblTitle.TabIndex = 0;
-        lblTitle.Text = "TELNET LISTENER";
-        // 
-        // lblSubtitle
-        // 
-        lblSubtitle.AutoSize = true;
-        lblSubtitle.ForeColor = Color.FromArgb(100, 116, 139);
-        lblSubtitle.Location = new Point(28, 62);
-        lblSubtitle.Name = "lblSubtitle";
-        lblSubtitle.Size = new Size(634, 28);
-        lblSubtitle.TabIndex = 1;
-        lblSubtitle.Text = "Lắng nghe kết nối TCP từ dịch vụ Telnet và hiển thị nội dung nhận được.";
-        // 
+        //
+        // lblTieuDe
+        //
+        lblTieuDe.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+        lblTieuDe.ForeColor = Color.FromArgb(35, 78, 120);
+        lblTieuDe.Location = new Point(24, 16);
+        lblTieuDe.Name = "lblTieuDe";
+        lblTieuDe.Size = new Size(650, 38);
+        lblTieuDe.TabIndex = 0;
+        lblTieuDe.Text = "TCP SERVER - TELNET LISTENER";
+        //
+        // lblMoTa
+        //
+        lblMoTa.Font = new Font("Segoe UI", 9.5F);
+        lblMoTa.ForeColor = Color.FromArgb(100, 100, 100);
+        lblMoTa.Location = new Point(24, 54);
+        lblMoTa.Name = "lblMoTa";
+        lblMoTa.Size = new Size(650, 24);
+        lblMoTa.TabIndex = 1;
+        lblMoTa.Text = "Lắng nghe kết nối Telnet tại cổng 8080 và hiển thị nội dung nhận được.";
+        //
         // btnListen
-        // 
-        btnListen.BackColor = Color.FromArgb(46, 117, 182);
+        //
+        btnListen.BackColor = Color.FromArgb(51, 122, 183);
+        btnListen.Cursor = Cursors.Hand;
         btnListen.FlatAppearance.BorderSize = 0;
+        btnListen.FlatAppearance.MouseDownBackColor = Color.FromArgb(40, 96, 145);
+        btnListen.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 138, 204);
         btnListen.FlatStyle = FlatStyle.Flat;
-        btnListen.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+        btnListen.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
         btnListen.ForeColor = Color.White;
-        btnListen.Location = new Point(410, 20);
+        btnListen.Location = new Point(730, 16);
         btnListen.Name = "btnListen";
-        btnListen.Size = new Size(125, 44);
+        btnListen.Size = new Size(146, 44);
         btnListen.TabIndex = 2;
         btnListen.Text = "Listen";
         btnListen.UseVisualStyleBackColor = false;
         btnListen.Click += btnListen_Click;
-        // 
-        // lvCommand
-        // 
-        lvCommand.BorderStyle = BorderStyle.FixedSingle;
-        lvCommand.HideSelection = false;
-        lvCommand.Location = new Point(28, 105);
-        lvCommand.Name = "lvCommand";
-        lvCommand.Size = new Size(505, 290);
-        lvCommand.TabIndex = 3;
-        lvCommand.UseCompatibleStateImageBehavior = false;
-        lvCommand.View = View.List;
-        // 
-        // lblStatus
-        // 
-        lblStatus.AutoSize = true;
-        lblStatus.Font = new Font("Segoe UI", 9.5F, FontStyle.Italic);
-        lblStatus.ForeColor = Color.FromArgb(100, 116, 139);
-        lblStatus.Location = new Point(28, 410);
-        lblStatus.Name = "lblStatus";
-        lblStatus.Size = new Size(337, 25);
-        lblStatus.TabIndex = 4;
-        lblStatus.Text = "Chưa lắng nghe. Bấm Listen để bắt đầu.";
-        // 
+        //
+        // grpNhatKy
+        //
+        grpNhatKy.Controls.Add(rtbNhatKy);
+        grpNhatKy.Font = new Font("Segoe UI", 10F);
+        grpNhatKy.Location = new Point(24, 90);
+        grpNhatKy.Name = "grpNhatKy";
+        grpNhatKy.Size = new Size(852, 460);
+        grpNhatKy.TabIndex = 3;
+        grpNhatKy.TabStop = false;
+        grpNhatKy.Text = "Nhật ký Telnet";
+        //
+        // rtbNhatKy
+        //
+        rtbNhatKy.BackColor = Color.White;
+        rtbNhatKy.BorderStyle = BorderStyle.FixedSingle;
+        rtbNhatKy.DetectUrls = false;
+        rtbNhatKy.Font = new Font("Segoe UI", 9.5F);
+        rtbNhatKy.Location = new Point(14, 26);
+        rtbNhatKy.Name = "rtbNhatKy";
+        rtbNhatKy.ReadOnly = true;
+        rtbNhatKy.ScrollBars = RichTextBoxScrollBars.Vertical;
+        rtbNhatKy.Size = new Size(824, 420);
+        rtbNhatKy.TabIndex = 0;
+        rtbNhatKy.Text = "";
+        //
+        // lblTrangThai
+        //
+        lblTrangThai.Font = new Font("Segoe UI", 9.5F, FontStyle.Italic);
+        lblTrangThai.ForeColor = Color.FromArgb(100, 100, 100);
+        lblTrangThai.Location = new Point(24, 560);
+        lblTrangThai.Name = "lblTrangThai";
+        lblTrangThai.Size = new Size(852, 24);
+        lblTrangThai.TabIndex = 4;
+        lblTrangThai.Text = "Chưa lắng nghe. Bấm Listen để bắt đầu.";
+        //
         // Bai02Form
-        // 
-        AutoScaleDimensions = new SizeF(11F, 28F);
+        //
+        AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = Color.White;
-        ClientSize = new Size(699, 510);
-        Controls.Add(lblStatus);
-        Controls.Add(lvCommand);
+        ClientSize = new Size(900, 600);
+        Controls.Add(lblTrangThai);
+        Controls.Add(grpNhatKy);
         Controls.Add(btnListen);
-        Controls.Add(lblSubtitle);
-        Controls.Add(lblTitle);
-        Font = new Font("Segoe UI", 10F);
-        FormBorderStyle = FormBorderStyle.FixedDialog;
+        Controls.Add(lblMoTa);
+        Controls.Add(lblTieuDe);
+        FormBorderStyle = FormBorderStyle.FixedSingle;
         MaximizeBox = false;
-        MinimizeBox = false;
         Name = "Bai02Form";
-        StartPosition = FormStartPosition.CenterScreen;
+        StartPosition = FormStartPosition.CenterParent;
         Text = "Telnet Listener - Bài 02";
+        FormClosing += Bai02Form_FormClosing;
+        grpNhatKy.ResumeLayout(false);
         ResumeLayout(false);
-        PerformLayout();
     }
 
     #endregion
 
-    private Label lblTitle;
-    private Label lblSubtitle;
+    private Label lblTieuDe;
+    private Label lblMoTa;
     private Button btnListen;
-    private ListView lvCommand;
-    private Label lblStatus;
+    private GroupBox grpNhatKy;
+    private RichTextBox rtbNhatKy;
+    private Label lblTrangThai;
 }
