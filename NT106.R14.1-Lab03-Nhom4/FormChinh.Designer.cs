@@ -37,7 +37,6 @@ namespace NT106.R14._1_Lab03_Nhom4
             btnBai04 = new Button();
             btnBai05 = new Button();
             btnBai06 = new Button();
-            lblGhiChu = new Label();
             SuspendLayout();
             //
             // lblTieuDe
@@ -181,17 +180,6 @@ namespace NT106.R14._1_Lab03_Nhom4
             btnBai06.UseVisualStyleBackColor = false;
             btnBai06.Click += btnBai06_Click;
             //
-            // lblGhiChu
-            //
-            lblGhiChu.Font = new Font("Segoe UI", 9.5F, FontStyle.Italic);
-            lblGhiChu.ForeColor = Color.FromArgb(120, 120, 120);
-            lblGhiChu.Location = new Point(0, 486);
-            lblGhiChu.Name = "lblGhiChu";
-            lblGhiChu.Size = new Size(980, 24);
-            lblGhiChu.TabIndex = 9;
-            lblGhiChu.Text = "Bài 01, 02, 03, 04, 05 và 06 đã hoàn thành.";
-            lblGhiChu.TextAlign = ContentAlignment.MiddleCenter;
-            //
             // FormChinh
             //
             AcceptButton = btnBai03;
@@ -199,7 +187,6 @@ namespace NT106.R14._1_Lab03_Nhom4
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(980, 540);
-            Controls.Add(lblGhiChu);
             Controls.Add(btnBai06);
             Controls.Add(btnBai05);
             Controls.Add(btnBai04);
@@ -228,6 +215,5 @@ namespace NT106.R14._1_Lab03_Nhom4
         private Button btnBai04;
         private Button btnBai05;
         private Button btnBai06;
-        private Label lblGhiChu;
     }
 }
