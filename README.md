@@ -1,7 +1,5 @@
 # NT106.R14.1 - Lab 03 - Nhóm 4
 
-> Lập trình Sockets trong C# - README "cầm tay chỉ việc" cho sinh viên hay quên.
-
 Repo này gom **6 bài thực hành Lab 03** vào cùng một solution. Mỗi bài là một project
 WinForms riêng, có form điều hướng để mở Server/Client. Nếu bạn chỉ muốn chạy thử ngay,
 nhảy xuống [Chạy nhanh](#2-chạy-nhanh). Nếu đang bị lỗi, xem [Lỗi hay gặp](#8-lỗi-hay-gặp).
@@ -16,8 +14,6 @@ nhảy xuống [Chạy nhanh](#2-chạy-nhanh). Nếu đang bị lỗi, xem [L�
 6. [Giao thức client - server](#6-giao-thức-client---server)
 7. [Đối chiếu yêu cầu đề bài](#7-đối-chiếu-yêu-cầu-đề-bài)
 8. [Lỗi hay gặp](#8-lỗi-hay-gặp)
-9. [Nộp bài](#9-nộp-bài)
-10. [Tham khảo](#10-tham-khảo)
 
 ---
 
@@ -361,7 +357,7 @@ Repo dùng giao thức văn bản, mỗi dòng kết thúc bằng `\n`, các tr�
 | Bài 05: 1 server - multi client, SQLite tại server, random cá nhân/cộng đồng | ✅ | `Lab03_Bai05` |
 | Bài 06: chat room, broadcast, nhắn riêng, gửi ảnh/txt | ✅ | `Lab03_Bai06` |
 | Nộp source trên GitHub | ✅ | Repo này |
-| Nộp báo cáo + source đúng định dạng zip | ⬜ | Làm theo mục [Nộp bài](#9-nộp-bài) |
+| Nộp báo cáo + source đúng định dạng zip | ⬜ | Theo quy định của môn học |
 
 ---
 
@@ -379,46 +375,6 @@ Repo dùng giao thức văn bản, mỗi dòng kết thúc bằng `\n`, các tr�
 | Gửi file báo quá lớn | Giới hạn 5 MB | Nén/chọn file nhỏ hơn |
 | Build lỗi `NETSDK1045` | Máy chưa có .NET 10 SDK | Cài .NET 10 SDK, kiểm tra `dotnet --version` |
 | Chạy `dotnet run` bị mở sai project | Đang đứng ở solution root | Thêm `--project .\Lab03_Bai0x` |
-
----
-
-## 9. Nộp bài
-
-Theo yêu cầu trong PDF:
-
-1. Push toàn bộ source lên GitHub (repo này).
-2. Nhóm trưởng nộp bài tại website môn học.
-3. Nén toàn bộ file liên quan thành **một file `.zip`**, đặt tên:
-
-   ```text
-   <Mã lớp>-Lab03-<MSSV1>-<MSSV2>.zip
-   ```
-
-   Ví dụ:
-
-   ```text
-   NT106.M21.MMCL.1-Lab03-25520001-25520002.zip
-   ```
-
-4. **Không** đưa `bin/`, `obj/`, `.vs/` vào file nộp.
-5. Kiểm tra lại: mở solution trên máy khác (hoặc xóa `bin/obj` rồi build lại) phải
-   chạy được.
-
-> Nộp trễ, thiếu file, code không chạy hoặc copy code nguồn khác sẽ bị trừ theo mức độ
-> (theo PDF). Chạy thử `dotnet build` trước khi nộp là cách nhanh nhất để tránh lỗi.
-
----
-
-## 10. Tham khảo
-
-- Microsoft, *C# Guide*: <https://docs.microsoft.com/en-us/dotnet/csharp/>
-- Microsoft, *System.Net.Sockets*: <https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets>
-- Microsoft, *TcpClient*: <https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.tcpclient>
-- Microsoft, *TcpListener*: <https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.tcplistener>
-- Microsoft, *UdpClient*: <https://docs.microsoft.com/en-us/dotnet/api/system.net.sockets.udpclient>
-- Microsoft, *Microsoft.Data.Sqlite*: <https://learn.microsoft.com/en-us/dotnet/standard/data/sqlite/>
-- Robert C. Martin, *Clean Code: A Handbook of Agile Software Craftsmanship*, 2009.
-- Telnet Client trên Windows: <https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/telnet>
 
 ---
 
