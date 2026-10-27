@@ -52,4 +52,3 @@ trong C#.
   `8083`. Bài 02 và 03 không chạy server cùng lúc.
 - Mỗi bài là một project trong cùng solution, có form điều hướng riêng; giao diện dễ
   nhìn, có trạng thái/log; code tách helper, tên biến/hàm rõ nghĩa.
-- Nộp source trên GitHub và file zip theo quy định của môn.
