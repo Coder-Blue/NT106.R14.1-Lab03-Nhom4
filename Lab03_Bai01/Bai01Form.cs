@@ -2,34 +2,34 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai01;
 
 public partial class Bai01Form : Form
 {
-    private UdpServerForm? udpServerForm;
-    private UdpClientForm? udpClientForm;
+    private UdpServerForm? serverForm;
+    private UdpClientForm? clientForm;
 
     public Bai01Form() => InitializeComponent();
 
-    private void btnUdpServer_Click(object sender, EventArgs e)
+    private void btnMoServer_Click(object sender, EventArgs e)
     {
-        if (udpServerForm is null || udpServerForm.IsDisposed)
+        if (serverForm is null || serverForm.IsDisposed)
         {
-            udpServerForm = new UdpServerForm();
-            udpServerForm.FormClosed += (_, _) => udpServerForm = null;
-            udpServerForm.Show(this);
+            serverForm = new UdpServerForm();
+            serverForm.FormClosed += (_, _) => serverForm = null;
+            serverForm.Show(this);
             return;
         }
 
-        udpServerForm.Activate();
+        serverForm.Activate();
     }
 
-    private void btnUdpClient_Click(object sender, EventArgs e)
+    private void btnMoClient_Click(object sender, EventArgs e)
     {
-        if (udpClientForm is null || udpClientForm.IsDisposed)
+        if (clientForm is null || clientForm.IsDisposed)
         {
-            udpClientForm = new UdpClientForm();
-            udpClientForm.FormClosed += (_, _) => udpClientForm = null;
-            udpClientForm.Show(this);
+            clientForm = new UdpClientForm();
+            clientForm.FormClosed += (_, _) => clientForm = null;
+            clientForm.Show(this);
             return;
         }
 
-        udpClientForm.Activate();
+        clientForm.Activate();
     }
 }

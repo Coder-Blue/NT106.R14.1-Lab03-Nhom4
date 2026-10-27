@@ -6,68 +6,143 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai01;
 
 public partial class UdpServerForm : Form
 {
-    private UdpClient? udpServer;
-    private volatile bool isListening;
+    private Socket? serverSocket;
+    private CancellationTokenSource? nguonHuy;
 
-    public UdpServerForm() => InitializeComponent();
-
-    private void btnListen_Click(object sender, EventArgs e)
+    public UdpServerForm()
     {
-        if (!int.TryParse(txtPort.Text, out int port) || port is < 1 or > 65535)
-        {
-            MessageBox.Show("Port không hợp lệ (1-65535).", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        try
-        {
-            udpServer = new UdpClient(port);
-        }
-        catch (SocketException ex)
-        {
-            MessageBox.Show($"Không mở được port {port}: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return;
-        }
-
-        isListening = true;
-        new Thread(ListenLoop) { IsBackground = true }.Start();
-
-        btnListen.Enabled = false;
-        txtPort.Enabled = false;
-        AppendMessage($"Đang lắng nghe tại port {port}...");
+        InitializeComponent();
+        txtCong.Text = UdpHelper.CongMacDinh.ToString();
+        CapNhatTrangThai("Chưa lắng nghe. Bấm Listen để bắt đầu.");
     }
 
-    private void ListenLoop()
+    private async void btnListen_Click(object sender, EventArgs e)
     {
+        if (nguonHuy is not null)
+        {
+            DungServer();
+            return;
+        }
+
+        await ChayServerAsync();
+    }
+
+    private async Task ChayServerAsync()
+    {
+        if (!UdpHelper.DocCong(txtCong.Text, out var port))
+        {
+            MessageBox.Show(this, "Port không hợp lệ (1-65535).", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtCong.Focus();
+            return;
+        }
+
+        var nguon = new CancellationTokenSource();
+        nguonHuy = nguon;
+        serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
         try
         {
-            while (isListening)
+            serverSocket.Bind(new IPEndPoint(IPAddress.Any, port));
+            btnListen.Text = "Stop";
+            txtCong.Enabled = false;
+            UdpHelper.GhiNhatKy(rtbNhatKy, "UDP server started on port " + port);
+            CapNhatTrangThai();
+
+            await NhanDuLieuAsync(serverSocket, nguon.Token);
+        }
+        catch (OperationCanceledException) when (nguon.IsCancellationRequested)
+        {
+        }
+        catch (ObjectDisposedException) when (nguon.IsCancellationRequested)
+        {
+        }
+        catch (SocketException) when (nguon.IsCancellationRequested)
+        {
+        }
+        catch (Exception ex)
+        {
+            UdpHelper.GhiNhatKy(rtbNhatKy, "Lỗi: " + ex.Message);
+
+            if (!IsDisposed)
             {
-                var remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                byte[] receivedBytes = udpServer!.Receive(ref remoteEndPoint);
-                string message = Encoding.UTF8.GetString(receivedBytes);
-                AppendMessage($"{remoteEndPoint.Address}:{message}");
+                MessageBox.Show(
+                    this,
+                    $"Không mở được port {port}: {ex.Message}\n\n" +
+                    "Hãy tắt chương trình khác đang dùng port này.",
+                    "Lỗi",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
-        catch (SocketException) when (!isListening) { }
-        catch (ObjectDisposedException) { }
+        finally
+        {
+            serverSocket?.Close();
+            serverSocket = null;
+            nguonHuy = null;
+            nguon.Dispose();
+
+            if (!IsDisposed)
+            {
+                btnListen.Text = "Listen";
+                txtCong.Enabled = true;
+                CapNhatTrangThai("Server đã dừng.");
+            }
+        }
     }
 
-    private void AppendMessage(string message)
+    private async Task NhanDuLieuAsync(Socket socket, CancellationToken token)
     {
-        if (lvMessages.InvokeRequired)
+        var buffer = new byte[65535];
+        EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
+
+        while (!token.IsCancellationRequested)
         {
-            lvMessages.Invoke(new Action<string>(AppendMessage), message);
+            var ketQua = await socket.ReceiveFromAsync(buffer.AsMemory(), SocketFlags.None, remoteEndPoint, token);
+            if (ketQua.ReceivedBytes == 0)
+            {
+                continue;
+            }
+
+            var noiDung = Encoding.UTF8.GetString(buffer, 0, ketQua.ReceivedBytes);
+            var diaChi = (IPEndPoint)ketQua.RemoteEndPoint;
+            UdpHelper.GhiNhatKy(rtbNhatKy, $"{diaChi.Address}:{diaChi.Port}: {noiDung}");
+        }
+    }
+
+    private void CapNhatTrangThai(string? thongBao = null)
+    {
+        if (InvokeRequired)
+        {
+            BeginInvoke(() => CapNhatTrangThai(thongBao));
             return;
         }
 
-        lvMessages.Items.Add(new ListViewItem(message));
+        if (IsDisposed)
+        {
+            return;
+        }
+
+        if (thongBao is not null)
+        {
+            lblTrangThai.Text = thongBao;
+            return;
+        }
+
+        var diaChi = UdpHelper.LayIpv4();
+        lblTrangThai.Text = $"Đang lắng nghe tại {diaChi}:{txtCong.Text}. Mở UDP Client để gửi thông điệp.";
     }
 
-    protected override void OnFormClosing(FormClosingEventArgs e)
+    private void DungServer()
     {
-        isListening = false;
-        udpServer?.Close();
-        base.OnFormClosing(e);
+        if (nguonHuy is null)
+        {
+            return;
+        }
+
+        btnListen.Text = "Đang dừng...";
+        nguonHuy.Cancel();
+        serverSocket?.Close();
     }
+
+    private void UdpServerForm_FormClosing(object sender, FormClosingEventArgs e) => DungServer();
 }

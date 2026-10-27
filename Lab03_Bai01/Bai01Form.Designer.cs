@@ -1,114 +1,136 @@
-namespace NT106.R14._1_Lab03_Nhom4.Bai01;
-
-partial class Bai01Form
+namespace NT106.R14._1_Lab03_Nhom4.Bai01
 {
-    /// <summary>
-    /// Required designer variable.
-    /// </summary>
-    private System.ComponentModel.IContainer components = null;
-
-    /// <summary>
-    /// Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing)
+    partial class Bai01Form
     {
-        if (disposing && (components != null))
+        /// <summary>
+        ///  Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        ///  Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
         {
-            components.Dispose();
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
         }
-        base.Dispose(disposing);
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        ///  Required method for Designer support - do not modify
+        ///  the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            lblTieuDe = new Label();
+            lblMoTa = new Label();
+            btnMoServer = new Button();
+            btnMoClient = new Button();
+            lblLuuY = new Label();
+            SuspendLayout();
+            //
+            // lblTieuDe
+            //
+            lblTieuDe.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
+            lblTieuDe.ForeColor = Color.FromArgb(35, 78, 120);
+            lblTieuDe.Location = new Point(0, 26);
+            lblTieuDe.Name = "lblTieuDe";
+            lblTieuDe.Size = new Size(720, 40);
+            lblTieuDe.TabIndex = 0;
+            lblTieuDe.Text = "BÀI 01 - UDP CLIENT / SERVER";
+            lblTieuDe.TextAlign = ContentAlignment.MiddleCenter;
+            //
+            // lblMoTa
+            //
+            lblMoTa.Font = new Font("Segoe UI", 10F);
+            lblMoTa.ForeColor = Color.FromArgb(90, 90, 90);
+            lblMoTa.Location = new Point(0, 72);
+            lblMoTa.Name = "lblMoTa";
+            lblMoTa.Size = new Size(720, 26);
+            lblMoTa.TabIndex = 1;
+            lblMoTa.Text = "Gửi và nhận dữ liệu giữa UDP Client và UDP Server.";
+            lblMoTa.TextAlign = ContentAlignment.MiddleCenter;
+            //
+            // btnMoServer
+            //
+            btnMoServer.BackColor = Color.FromArgb(51, 122, 183);
+            btnMoServer.Cursor = Cursors.Hand;
+            btnMoServer.FlatAppearance.BorderSize = 0;
+            btnMoServer.FlatAppearance.MouseDownBackColor = Color.FromArgb(40, 96, 145);
+            btnMoServer.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 138, 204);
+            btnMoServer.FlatStyle = FlatStyle.Flat;
+            btnMoServer.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            btnMoServer.ForeColor = Color.White;
+            btnMoServer.Location = new Point(50, 126);
+            btnMoServer.Name = "btnMoServer";
+            btnMoServer.Size = new Size(290, 120);
+            btnMoServer.TabIndex = 2;
+            btnMoServer.Text = "Mở UDP Server\nLắng nghe dữ liệu";
+            btnMoServer.UseVisualStyleBackColor = false;
+            btnMoServer.Click += btnMoServer_Click;
+            //
+            // btnMoClient
+            //
+            btnMoClient.BackColor = Color.FromArgb(51, 122, 183);
+            btnMoClient.Cursor = Cursors.Hand;
+            btnMoClient.FlatAppearance.BorderSize = 0;
+            btnMoClient.FlatAppearance.MouseDownBackColor = Color.FromArgb(40, 96, 145);
+            btnMoClient.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 138, 204);
+            btnMoClient.FlatStyle = FlatStyle.Flat;
+            btnMoClient.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            btnMoClient.ForeColor = Color.White;
+            btnMoClient.Location = new Point(380, 126);
+            btnMoClient.Name = "btnMoClient";
+            btnMoClient.Size = new Size(290, 120);
+            btnMoClient.TabIndex = 3;
+            btnMoClient.Text = "Mở UDP Client\nGửi thông điệp";
+            btnMoClient.UseVisualStyleBackColor = false;
+            btnMoClient.Click += btnMoClient_Click;
+            //
+            // lblLuuY
+            //
+            lblLuuY.Font = new Font("Segoe UI", 9.5F, FontStyle.Italic);
+            lblLuuY.ForeColor = Color.FromArgb(120, 120, 120);
+            lblLuuY.Location = new Point(0, 276);
+            lblLuuY.Name = "lblLuuY";
+            lblLuuY.Size = new Size(720, 50);
+            lblLuuY.TabIndex = 4;
+            lblLuuY.Text = "Mở Server trước, nhấn Listen, sau đó mở Client để gửi thông điệp.";
+            lblLuuY.TextAlign = ContentAlignment.MiddleCenter;
+            //
+            // Bai01Form
+            //
+            AcceptButton = btnMoServer;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
+            ClientSize = new Size(720, 350);
+            Controls.Add(lblLuuY);
+            Controls.Add(btnMoClient);
+            Controls.Add(btnMoServer);
+            Controls.Add(lblMoTa);
+            Controls.Add(lblTieuDe);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "Bai01Form";
+            StartPosition = FormStartPosition.CenterParent;
+            Text = "Bài 01 - UDP Client / Server";
+            ResumeLayout(false);
+        }
+
+        #endregion
+
+        private Label lblTieuDe;
+        private Label lblMoTa;
+        private Button btnMoServer;
+        private Button btnMoClient;
+        private Label lblLuuY;
     }
-
-    #region Windows Form Designer generated code
-
-    /// <summary>
-    /// Required method for Designer support - do not modify
-    /// the contents of this method with the code editor.
-    /// </summary>
-    private void InitializeComponent()
-    {
-        lblTitle = new Label();
-        lblSubtitle = new Label();
-        btnUdpServer = new Button();
-        btnUdpClient = new Button();
-        SuspendLayout();
-        // 
-        // lblTitle
-        // 
-        lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
-        lblTitle.ForeColor = Color.FromArgb(30, 41, 59);
-        lblTitle.Location = new Point(0, 20);
-        lblTitle.Name = "lblTitle";
-        lblTitle.Size = new Size(440, 36);
-        lblTitle.TabIndex = 0;
-        lblTitle.Text = "Truyền dữ liệu qua UDP";
-        lblTitle.TextAlign = ContentAlignment.MiddleCenter;
-        // 
-        // lblSubtitle
-        // 
-        lblSubtitle.ForeColor = Color.FromArgb(100, 116, 139);
-        lblSubtitle.Location = new Point(0, 60);
-        lblSubtitle.Name = "lblSubtitle";
-        lblSubtitle.Size = new Size(440, 24);
-        lblSubtitle.TabIndex = 1;
-        lblSubtitle.Text = "Chọn vai trò để mở cửa sổ tương ứng";
-        lblSubtitle.TextAlign = ContentAlignment.MiddleCenter;
-        // 
-        // btnUdpServer
-        // 
-        btnUdpServer.BackColor = Color.RoyalBlue;
-        btnUdpServer.Cursor = Cursors.Hand;
-        btnUdpServer.FlatStyle = FlatStyle.Flat;
-        btnUdpServer.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-        btnUdpServer.ForeColor = Color.White;
-        btnUdpServer.Location = new Point(40, 120);
-        btnUdpServer.Name = "btnUdpServer";
-        btnUdpServer.Size = new Size(160, 56);
-        btnUdpServer.TabIndex = 2;
-        btnUdpServer.Text = "UDP Server";
-        btnUdpServer.UseVisualStyleBackColor = false;
-        btnUdpServer.Click += btnUdpServer_Click;
-        // 
-        // btnUdpClient
-        // 
-        btnUdpClient.BackColor = Color.RoyalBlue;
-        btnUdpClient.Cursor = Cursors.Hand;
-        btnUdpClient.FlatStyle = FlatStyle.Flat;
-        btnUdpClient.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-        btnUdpClient.ForeColor = Color.White;
-        btnUdpClient.Location = new Point(240, 120);
-        btnUdpClient.Name = "btnUdpClient";
-        btnUdpClient.Size = new Size(160, 56);
-        btnUdpClient.TabIndex = 3;
-        btnUdpClient.Text = "UDP Client";
-        btnUdpClient.UseVisualStyleBackColor = false;
-        btnUdpClient.Click += btnUdpClient_Click;
-        // 
-        // Bai01Form
-        // 
-        AutoScaleDimensions = new SizeF(11F, 28F);
-        AutoScaleMode = AutoScaleMode.Font;
-        BackColor = Color.FromArgb(245, 247, 250);
-        ClientSize = new Size(460, 184);
-        Controls.Add(btnUdpClient);
-        Controls.Add(btnUdpServer);
-        Controls.Add(lblSubtitle);
-        Controls.Add(lblTitle);
-        Font = new Font("Segoe UI", 10F);
-        FormBorderStyle = FormBorderStyle.FixedDialog;
-        MaximizeBox = false;
-        MinimizeBox = false;
-        Name = "Bai01Form";
-        StartPosition = FormStartPosition.CenterScreen;
-        Text = "Lab 03 - Bài 01: UDP";
-        ResumeLayout(false);
-    }
-
-    #endregion
-
-    private Label lblTitle;
-    private Label lblSubtitle;
-    private Button btnUdpServer;
-    private Button btnUdpClient;
 }
