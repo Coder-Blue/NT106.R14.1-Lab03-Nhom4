@@ -75,19 +75,21 @@ namespace NT106.R14._1_Lab03_Nhom4
             //
             // btnBai01
             //
-            btnBai01.BackColor = Color.FromArgb(236, 240, 245);
-            btnBai01.Cursor = Cursors.Default;
-            btnBai01.Enabled = false;
+            btnBai01.BackColor = Color.FromArgb(51, 122, 183);
+            btnBai01.Cursor = Cursors.Hand;
             btnBai01.FlatAppearance.BorderSize = 0;
+            btnBai01.FlatAppearance.MouseDownBackColor = Color.FromArgb(40, 96, 145);
+            btnBai01.FlatAppearance.MouseOverBackColor = Color.FromArgb(64, 138, 204);
             btnBai01.FlatStyle = FlatStyle.Flat;
             btnBai01.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
-            btnBai01.ForeColor = Color.FromArgb(120, 130, 140);
+            btnBai01.ForeColor = Color.White;
             btnBai01.Location = new Point(40, 190);
             btnBai01.Name = "btnBai01";
             btnBai01.Size = new Size(280, 112);
             btnBai01.TabIndex = 3;
             btnBai01.Text = "Bài 01\nUDP Client - Server";
             btnBai01.UseVisualStyleBackColor = false;
+            btnBai01.Click += btnBai01_Click;
             //
             // btnBai02
             //
@@ -187,7 +189,7 @@ namespace NT106.R14._1_Lab03_Nhom4
             lblGhiChu.Name = "lblGhiChu";
             lblGhiChu.Size = new Size(980, 24);
             lblGhiChu.TabIndex = 9;
-            lblGhiChu.Text = "Bài 02, 03, 04, 05 và 06 đã hoàn thành.";
+            lblGhiChu.Text = "Bài 01, 02, 03, 04, 05 và 06 đã hoàn thành.";
             lblGhiChu.TextAlign = ContentAlignment.MiddleCenter;
             //
             // FormChinh

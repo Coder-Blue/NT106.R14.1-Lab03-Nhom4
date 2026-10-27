@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Lab03_Bai01\Lab03_Bai01.csproj" />
     <ProjectReference Include="..\Lab03_Bai02\Lab03_Bai02.csproj" />
     <ProjectReference Include="..\Lab03_Bai03\Lab03_Bai03.csproj" />
     <ProjectReference Include="..\Lab03_Bai04\Lab03_Bai04.csproj" />
