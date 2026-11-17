@@ -46,18 +46,6 @@ public static class ChatHelper
 
     public static string GioHienTai() => DateTime.Now.ToString("HH:mm:ss");
 
-    public static Image? TaiHinh(string duongDan)
-    {
-        if (!File.Exists(duongDan))
-        {
-            return null;
-        }
-
-        using var luong = new FileStream(duongDan, FileMode.Open, FileAccess.Read);
-        using var hinh = Image.FromStream(luong);
-        return new Bitmap(hinh);
-    }
-
     public static (bool HopLe, IPEndPoint? DiemCuoi) DocDiemCuoi(string diaChi, string cong)
     {
         if (!IPAddress.TryParse(diaChi.Trim(), out var ipAddress))
@@ -101,32 +89,4 @@ public static class ChatHelper
         richTextBox.ScrollToCaret();
     }
 
-    public static void GhiChat(RichTextBox richTextBox, string noiDung)
-    {
-        if (richTextBox.IsDisposed || !richTextBox.IsHandleCreated)
-        {
-            return;
-        }
-
-        if (richTextBox.InvokeRequired)
-        {
-            richTextBox.BeginInvoke(() => GhiChat(richTextBox, noiDung));
-            return;
-        }
-
-        var mauChu = noiDung.Contains("[Riêng]", StringComparison.Ordinal)
-            ? Color.FromArgb(35, 125, 75)
-            : noiDung.Contains("[Tệp", StringComparison.Ordinal)
-                ? Color.FromArgb(51, 122, 183)
-                : noiDung.Contains("[Hệ thống]", StringComparison.Ordinal)
-                    ? Color.Gray
-                    : Color.FromArgb(35, 35, 35);
-
-        richTextBox.SelectionStart = richTextBox.TextLength;
-        richTextBox.SelectionLength = 0;
-        richTextBox.SelectionColor = mauChu;
-        richTextBox.AppendText(noiDung + Environment.NewLine);
-        richTextBox.SelectionColor = richTextBox.ForeColor;
-        richTextBox.ScrollToCaret();
-    }
 }

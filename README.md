@@ -16,7 +16,7 @@ trong C#.
 - **Bài 05 - Hôm nay ăn gì?**: một server, nhiều client đóng góp món; dữ liệu lưu
   SQLite tại server; random món cá nhân hoặc cộng đồng.
 - **Bài 06 - Chat Room**: một server, nhiều client; chỉ cần tên; chat chung, nhắn
-  riêng, gửi ảnh `.jpg`/`.png` và file `.txt`.
+  riêng, gửi ảnh `.jpg`/`.png` và file `.txt`; ảnh/tệp hiện trong chat, bấm để tải về máy.
 
 ## Cài đặt và chạy
 

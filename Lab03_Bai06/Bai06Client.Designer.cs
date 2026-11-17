@@ -39,8 +39,7 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             btnKetNoi = new Button();
             btnNgatKetNoi = new Button();
             grpChat = new GroupBox();
-            rtbChat = new RichTextBox();
-            picAnh = new PictureBox();
+            flpChat = new FlowLayoutPanel();
             grpNguoiDung = new GroupBox();
             lstNguoiDung = new ListBox();
             lblTongNguoi = new Label();
@@ -53,7 +52,6 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             lblGoiY = new Label();
             lblTrangThai = new Label();
             grpChat.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)picAnh).BeginInit();
             grpNguoiDung.SuspendLayout();
             grpGui.SuspendLayout();
             SuspendLayout();
@@ -76,7 +74,7 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             lblMoTa.Name = "lblMoTa";
             lblMoTa.Size = new Size(800, 24);
             lblMoTa.TabIndex = 1;
-            lblMoTa.Text = "Chat chung với cả phòng hoặc chọn một người để nhắn tin riêng.";
+            lblMoTa.Text = "Chat chung hoặc nhắn riêng. Bấm vào ảnh/tệp trong chat để tải về máy.";
             //
             // lblTenNguoiDung
             //
@@ -176,8 +174,7 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             //
             // grpChat
             //
-            grpChat.Controls.Add(picAnh);
-            grpChat.Controls.Add(rtbChat);
+            grpChat.Controls.Add(flpChat);
             grpChat.Font = new Font("Segoe UI", 10F);
             grpChat.Location = new Point(24, 136);
             grpChat.Name = "grpChat";
@@ -186,31 +183,18 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             grpChat.TabStop = false;
             grpChat.Text = "Phòng chat";
             //
-            // rtbChat
+            // flpChat
             //
-            rtbChat.BackColor = Color.White;
-            rtbChat.BorderStyle = BorderStyle.FixedSingle;
-            rtbChat.DetectUrls = false;
-            rtbChat.Font = new Font("Segoe UI", 10F);
-            rtbChat.Location = new Point(14, 26);
-            rtbChat.Name = "rtbChat";
-            rtbChat.ReadOnly = true;
-            rtbChat.ScrollBars = RichTextBoxScrollBars.Vertical;
-            rtbChat.Size = new Size(682, 480);
-            rtbChat.TabIndex = 0;
-            rtbChat.Text = "";
-            //
-            // picAnh
-            //
-            picAnh.BackColor = Color.White;
-            picAnh.BorderStyle = BorderStyle.FixedSingle;
-            picAnh.Location = new Point(14, 388);
-            picAnh.Name = "picAnh";
-            picAnh.Size = new Size(682, 118);
-            picAnh.SizeMode = PictureBoxSizeMode.Zoom;
-            picAnh.TabIndex = 1;
-            picAnh.TabStop = false;
-            picAnh.Visible = false;
+            flpChat.AutoScroll = true;
+            flpChat.BackColor = Color.White;
+            flpChat.BorderStyle = BorderStyle.FixedSingle;
+            flpChat.FlowDirection = FlowDirection.TopDown;
+            flpChat.Location = new Point(14, 26);
+            flpChat.Name = "flpChat";
+            flpChat.Padding = new Padding(8);
+            flpChat.Size = new Size(682, 480);
+            flpChat.TabIndex = 0;
+            flpChat.WrapContents = false;
             //
             // grpNguoiDung
             //
@@ -374,7 +358,6 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
             Text = "TCP Client - Bài 06";
             FormClosing += Bai06Client_FormClosing;
             grpChat.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)picAnh).EndInit();
             grpNguoiDung.ResumeLayout(false);
             grpGui.ResumeLayout(false);
             grpGui.PerformLayout();
@@ -395,8 +378,7 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai06
         private Button btnKetNoi;
         private Button btnNgatKetNoi;
         private GroupBox grpChat;
-        private RichTextBox rtbChat;
-        private PictureBox picAnh;
+        private FlowLayoutPanel flpChat;
         private GroupBox grpNguoiDung;
         private ListBox lstNguoiDung;
         private Label lblTongNguoi;

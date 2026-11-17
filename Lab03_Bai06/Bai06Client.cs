@@ -56,14 +56,14 @@ public partial class Bai06Client : Form
             txtCong.Enabled = false;
             btnNgatKetNoi.Enabled = true;
             CapNhatTrangThai("Đã kết nối, đang tham gia phòng chat...");
-            ChatHelper.GhiChat(rtbChat, $"[Hệ thống] Đã kết nối tới {diemCuoi}.");
+            ThemTinNhan($"[Hệ thống] Đã kết nối tới {diemCuoi}.");
 
             await boGhi.WriteLineAsync("TEN\t" + ten);
             _ = DocDuLieuAsync(nguonHuy.Token);
         }
         catch (Exception ex)
         {
-            ChatHelper.GhiChat(rtbChat, "[Hệ thống] Không thể kết nối: " + ex.Message);
+            ThemTinNhan("[Hệ thống] Không thể kết nối: " + ex.Message);
             NgatKetNoi();
             CapNhatTrangThai("Kết nối thất bại.");
         }
@@ -85,7 +85,7 @@ public partial class Bai06Client : Form
                 {
                     tenCuaToi = dong[7..];
                     Text = "Chat - " + tenCuaToi;
-                    ChatHelper.GhiChat(rtbChat, $"[Hệ thống] Xin chào {tenCuaToi}!");
+                    ThemTinNhan($"[Hệ thống] Xin chào {tenCuaToi}!");
                     CapNhatTrangThai($"Đã tham gia phòng chat với tên {tenCuaToi}.");
                     CapNhatNut();
                     continue;
@@ -94,7 +94,7 @@ public partial class Bai06Client : Form
                 if (dong.StartsWith("LOI\t"))
                 {
                     var thongBao = dong[4..];
-                    ChatHelper.GhiChat(rtbChat, "[Hệ thống] " + thongBao);
+                    ThemTinNhan("[Hệ thống] " + thongBao);
                     MessageBox.Show(this, thongBao, "Không thể tham gia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     NgatKetNoi();
                     return;
@@ -102,7 +102,7 @@ public partial class Bai06Client : Form
 
                 if (dong.StartsWith("MSG\t"))
                 {
-                    ChatHelper.GhiChat(rtbChat, dong[4..]);
+                    ThemTinNhan(dong[4..]);
                     continue;
                 }
 
@@ -125,14 +125,14 @@ public partial class Bai06Client : Form
         {
             if (!token.IsCancellationRequested)
             {
-                ChatHelper.GhiChat(rtbChat, "[Hệ thống] Mất kết nối: " + ex.Message);
+                ThemTinNhan("[Hệ thống] Mất kết nối: " + ex.Message);
             }
         }
         finally
         {
             if (!token.IsCancellationRequested)
             {
-                ChatHelper.GhiChat(rtbChat, "[Hệ thống] Server đã đóng kết nối.");
+                ThemTinNhan("[Hệ thống] Server đã đóng kết nối.");
                 NgatKetNoi();
             }
         }
@@ -203,7 +203,7 @@ public partial class Bai06Client : Form
         }
         catch (Exception ex) when (ex is IOException or SocketException or ObjectDisposedException)
         {
-            ChatHelper.GhiChat(rtbChat, "[Hệ thống] Gửi tin nhắn thất bại: " + ex.Message);
+            ThemTinNhan("[Hệ thống] Gửi tin nhắn thất bại: " + ex.Message);
             NgatKetNoi();
         }
     }
@@ -256,7 +256,7 @@ public partial class Bai06Client : Form
         }
         catch (Exception ex) when (ex is IOException or SocketException or ObjectDisposedException or UnauthorizedAccessException)
         {
-            ChatHelper.GhiChat(rtbChat, "[Hệ thống] Gửi tệp thất bại: " + ex.Message);
+            ThemTinNhan("[Hệ thống] Gửi tệp thất bại: " + ex.Message);
         }
     }
 
@@ -275,39 +275,289 @@ public partial class Bai06Client : Form
             var duLieu = Convert.FromBase64String(phan[3]);
             var cheDo = phan[4];
 
-            var thuMuc = Path.Combine(AppContext.BaseDirectory, "tep-nhan-duoc");
-            Directory.CreateDirectory(thuMuc);
-            var tenLuu = $"{DateTime.Now:yyyyMMdd-HHmmss-fff}_{tenTep}";
-            var duongDan = Path.Combine(thuMuc, tenLuu);
-            File.WriteAllBytes(duongDan, duLieu);
-
-            var nguoiHienThi = nguoiGui == tenCuaToi ? "Bạn" : nguoiGui;
-            var loai = ChatHelper.LaAnh(tenTep) ? "ảnh" : "tệp";
-            var rieng = cheDo == "PRIVATE" ? " riêng" : "";
-            ChatHelper.GhiChat(
-                rtbChat,
-                $"[{ChatHelper.GioHienTai()}] [Tệp{rieng}] {nguoiHienThi} đã gửi {loai}: {tenTep}");
-            ChatHelper.GhiChat(rtbChat, $"[Hệ thống] Đã lưu tệp vào: {duongDan}");
-
-            if (ChatHelper.LaAnh(tenTep))
+            try
             {
-                HienThiAnh(duongDan);
+                var thuMuc = Path.Combine(AppContext.BaseDirectory, "tep-nhan-duoc");
+                Directory.CreateDirectory(thuMuc);
+                var tenLuu = $"{DateTime.Now:yyyyMMdd-HHmmss-fff}_{tenTep}";
+                File.WriteAllBytes(Path.Combine(thuMuc, tenLuu), duLieu);
             }
+            catch (Exception ex)
+            {
+                CapNhatTrangThai("Không lưu tạm được tệp: " + ex.Message);
+            }
+
+            ThemTepVaoChat(nguoiGui, tenTep, duLieu, cheDo);
         }
         catch (Exception ex)
         {
-            ChatHelper.GhiChat(rtbChat, "[Hệ thống] Không thể nhận tệp: " + ex.Message);
+            ThemTinNhan("[Hệ thống] Không thể nhận tệp: " + ex.Message);
         }
     }
 
-    private void HienThiAnh(string duongDan)
+    private void ThemTinNhan(string noiDung)
     {
-        var hinhMoi = ChatHelper.TaiHinh(duongDan);
-        var hinhCu = picAnh.Image;
-        picAnh.Image = hinhMoi;
-        picAnh.Visible = hinhMoi is not null;
-        rtbChat.Height = hinhMoi is not null ? 350 : 480;
-        hinhCu?.Dispose();
+        if (InvokeRequired)
+        {
+            BeginInvoke(() => ThemTinNhan(noiDung));
+            return;
+        }
+
+        if (IsDisposed || flpChat.IsDisposed)
+        {
+            return;
+        }
+
+        if (noiDung.Contains("[Hệ thống]", StringComparison.Ordinal))
+        {
+            var dongHeThong = TaoDongChat(false, 28);
+            var nhan = new Label
+            {
+                AutoSize = false,
+                Font = new Font("Segoe UI", 8.5F, FontStyle.Italic),
+                ForeColor = Color.FromArgb(110, 110, 110),
+                Height = 24,
+                Margin = new Padding(8, 2, 8, 2),
+                Text = noiDung,
+                TextAlign = ContentAlignment.MiddleCenter,
+                UseMnemonic = false,
+                Width = Math.Max(200, dongHeThong.Width - 16),
+            };
+
+            dongHeThong.Controls.Add(nhan);
+            ThemDongVaoChat(dongHeThong);
+            return;
+        }
+
+        var cuaToi = LaTinNhanCuaToi(noiDung);
+        var font = new Font("Segoe UI", 10F);
+        var bongBong = new Label
+        {
+            AutoSize = false,
+            BackColor = cuaToi ? Color.FromArgb(0, 132, 255) : Color.FromArgb(240, 240, 240),
+            Font = font,
+            ForeColor = cuaToi ? Color.White : Color.FromArgb(30, 30, 30),
+            Margin = new Padding(4, 3, 4, 3),
+            Padding = new Padding(10, 7, 10, 7),
+            Size = DoKichThuocChu(noiDung, font, 420),
+            Text = noiDung,
+            TextAlign = ContentAlignment.TopLeft,
+            UseMnemonic = false,
+        };
+
+        var dong = TaoDongChat(cuaToi, bongBong.Height);
+        dong.Controls.Add(bongBong);
+        ThemDongVaoChat(dong);
+    }
+
+    private static Size DoKichThuocChu(string noiDung, Font font, int chieuRongToiDa)
+    {
+        var kichThuoc = TextRenderer.MeasureText(
+            noiDung,
+            font,
+            new Size(chieuRongToiDa, int.MaxValue),
+            TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl);
+
+        return new Size(Math.Min(chieuRongToiDa, kichThuoc.Width) + 20, kichThuoc.Height + 14);
+    }
+
+    private FlowLayoutPanel TaoDongChat(bool canPhai, int chieuCao)
+    {
+        return new FlowLayoutPanel
+        {
+            AutoSize = false,
+            BackColor = Color.Transparent,
+            FlowDirection = canPhai ? FlowDirection.RightToLeft : FlowDirection.LeftToRight,
+            Height = chieuCao + 8,
+            Margin = new Padding(0),
+            Padding = new Padding(0),
+            Width = Math.Max(200, flpChat.ClientSize.Width - 40),
+            WrapContents = false,
+        };
+    }
+
+    private void ThemDongVaoChat(Control dong)
+    {
+        flpChat.Controls.Add(dong);
+        flpChat.PerformLayout();
+        flpChat.ScrollControlIntoView(dong);
+    }
+
+    private bool LaTinNhanCuaToi(string noiDung)
+    {
+        if (tenCuaToi is null)
+        {
+            return false;
+        }
+
+        return noiDung.Contains($"] {tenCuaToi}:", StringComparison.Ordinal) ||
+               noiDung.Contains("] [Riêng] Bạn ->", StringComparison.Ordinal);
+    }
+
+    private void ThemTepVaoChat(string nguoiGui, string tenTep, byte[] duLieu, string cheDo)
+    {
+        if (InvokeRequired)
+        {
+            BeginInvoke(() => ThemTepVaoChat(nguoiGui, tenTep, duLieu, cheDo));
+            return;
+        }
+
+        if (IsDisposed || flpChat.IsDisposed)
+        {
+            return;
+        }
+
+        var cuaToi = nguoiGui == tenCuaToi;
+        var nguoiHienThi = cuaToi ? "Bạn" : nguoiGui;
+        var bongBong = TaoBongBongTep(nguoiHienThi, tenTep, duLieu, cheDo, cuaToi);
+        var dong = TaoDongChat(cuaToi, bongBong.Height);
+        dong.Controls.Add(bongBong);
+        ThemDongVaoChat(dong);
+    }
+
+    private Control TaoBongBongTep(string nguoiHienThi, string tenTep, byte[] duLieu, string cheDo, bool cuaToi)
+    {
+        var laAnh = ChatHelper.LaAnh(tenTep);
+        var bongBong = new FlowLayoutPanel
+        {
+            AutoSize = false,
+            BackColor = cuaToi ? Color.FromArgb(225, 240, 255) : Color.FromArgb(242, 242, 242),
+            FlowDirection = FlowDirection.TopDown,
+            Height = laAnh ? 242 : 112,
+            Margin = new Padding(4, 3, 4, 3),
+            Padding = new Padding(8),
+            Width = laAnh ? 292 : 320,
+            WrapContents = false,
+        };
+
+        var tieuDe = new Label
+        {
+            AutoSize = false,
+            Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+            ForeColor = Color.FromArgb(60, 60, 60),
+            Height = 20,
+            Margin = new Padding(0, 0, 0, 4),
+            Text = $"{nguoiHienThi} · {ChatHelper.GioHienTai()}{(cheDo == "PRIVATE" ? " · Riêng" : "")}",
+            UseMnemonic = false,
+            Width = bongBong.Width - 16,
+        };
+        bongBong.Controls.Add(tieuDe);
+
+        if (laAnh)
+        {
+            var pic = new PictureBox
+            {
+                BackColor = Color.FromArgb(232, 232, 232),
+                Cursor = Cursors.Hand,
+                Height = 170,
+                Image = TaoAnh(duLieu),
+                Margin = new Padding(0, 0, 0, 4),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Width = 260,
+            };
+            pic.Click += (_, _) => TaiTep(duLieu, tenTep);
+            bongBong.Controls.Add(pic);
+
+            var goiY = new Label
+            {
+                AutoSize = false,
+                Cursor = Cursors.Hand,
+                Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                ForeColor = Color.FromArgb(70, 110, 170),
+                Height = 20,
+                Text = "Bấm vào ảnh để tải về máy",
+                TextAlign = ContentAlignment.MiddleLeft,
+                UseMnemonic = false,
+                Width = 260,
+            };
+            goiY.Click += (_, _) => TaiTep(duLieu, tenTep);
+            bongBong.Controls.Add(goiY);
+        }
+        else
+        {
+            var lienKet = new LinkLabel
+            {
+                AutoSize = false,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                Height = 40,
+                LinkBehavior = LinkBehavior.HoverUnderline,
+                LinkColor = Color.FromArgb(35, 95, 165),
+                Text = $"Tệp: {tenTep}\nBấm để tải về máy",
+                UseMnemonic = false,
+                Width = bongBong.Width - 16,
+            };
+            lienKet.LinkClicked += (_, _) => TaiTep(duLieu, tenTep);
+            bongBong.Controls.Add(lienKet);
+
+            var kichThuoc = new Label
+            {
+                AutoSize = false,
+                Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                ForeColor = Color.FromArgb(100, 100, 100),
+                Height = 18,
+                Text = $"{duLieu.Length / 1024.0:F1} KB",
+                TextAlign = ContentAlignment.MiddleLeft,
+                UseMnemonic = false,
+                Width = bongBong.Width - 16,
+            };
+            bongBong.Controls.Add(kichThuoc);
+        }
+
+        return bongBong;
+    }
+
+    private static Image? TaoAnh(byte[] duLieu)
+    {
+        try
+        {
+            using var luong = new MemoryStream(duLieu);
+            using var hinh = Image.FromStream(luong);
+            return new Bitmap(hinh);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private void TaiTep(byte[] duLieu, string tenTep)
+    {
+        using var hopThoai = new SaveFileDialog
+        {
+            FileName = tenTep,
+            Filter = ChatHelper.LaAnh(tenTep)
+                ? "Ảnh|*.jpg;*.jpeg;*.png|Tất cả tệp|*.*"
+                : "Tệp văn bản|*.txt|Tất cả tệp|*.*",
+            Title = "Tải tệp về máy",
+        };
+
+        var thuMucTai = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            "Downloads");
+        if (Directory.Exists(thuMucTai))
+        {
+            hopThoai.InitialDirectory = thuMucTai;
+        }
+
+        if (hopThoai.ShowDialog(this) != DialogResult.OK)
+        {
+            return;
+        }
+
+        try
+        {
+            File.WriteAllBytes(hopThoai.FileName, duLieu);
+            CapNhatTrangThai("Đã lưu tệp: " + hopThoai.FileName);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                this,
+                "Không thể lưu tệp: " + ex.Message,
+                "Lỗi",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
     }
 
     private async void btnNgatKetNoi_Click(object sender, EventArgs e)
@@ -352,11 +602,6 @@ public partial class Bai06Client : Form
         cmbNguoiNhan.SelectedIndex = 0;
         lblTongNguoi.Text = "0 người trong phòng";
 
-        var hinhCu = picAnh.Image;
-        picAnh.Image = null;
-        picAnh.Visible = false;
-        rtbChat.Height = 480;
-        hinhCu?.Dispose();
         txtTenNguoiDung.Enabled = true;
         txtDiaChi.Enabled = true;
         txtCong.Enabled = true;
