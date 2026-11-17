@@ -17,6 +17,20 @@ public static class PhongVeHelper
     public const string DiaChiMacDinh = "127.0.0.1";
     public const int CongMacDinh = 8081;
 
+    public static string LayIpv4()
+    {
+        try
+        {
+            return Dns.GetHostEntry(Dns.GetHostName()).AddressList
+                .FirstOrDefault(diaChi => diaChi.AddressFamily == AddressFamily.InterNetwork)?.ToString()
+                ?? "127.0.0.1";
+        }
+        catch (SocketException)
+        {
+            return "127.0.0.1";
+        }
+    }
+
     public static readonly string[] TatCaGhe =
     {
         "A1", "A2", "A3", "A4", "A5",

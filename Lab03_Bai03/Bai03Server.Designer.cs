@@ -53,7 +53,7 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai03
             lblMoTa.Name = "lblMoTa";
             lblMoTa.Size = new Size(560, 24);
             lblMoTa.TabIndex = 1;
-            lblMoTa.Text = "Lắng nghe kết nối tại 127.0.0.1:8080 và hiển thị thông điệp từ Client.";
+            lblMoTa.Text = "Lắng nghe kết nối tại IP của máy, cổng 8080 và hiển thị thông điệp từ Client.";
             //
             // btnListen
             //
