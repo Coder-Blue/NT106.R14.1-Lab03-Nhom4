@@ -310,13 +310,21 @@ public partial class Bai06Client : Form
 
         if (noiDung.Contains("[Hệ thống]", StringComparison.Ordinal))
         {
-            var dongHeThong = TaoDongChat(false, 28);
+            var fontHeThong = new Font("Segoe UI", 8.5F, FontStyle.Italic);
+            var chieuRong = Math.Max(200, flpChat.ClientSize.Width - 40);
+            var kichThuoc = TextRenderer.MeasureText(
+                noiDung,
+                fontHeThong,
+                new Size(Math.Max(100, chieuRong - 16), int.MaxValue),
+                TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl);
+            var chieuCao = Math.Max(24, kichThuoc.Height + 4);
+            var dongHeThong = TaoDongChat(false, chieuCao);
             var nhan = new Label
             {
                 AutoSize = false,
-                Font = new Font("Segoe UI", 8.5F, FontStyle.Italic),
+                Font = fontHeThong,
                 ForeColor = Color.FromArgb(110, 110, 110),
-                Height = 24,
+                Height = chieuCao,
                 Margin = new Padding(8, 2, 8, 2),
                 Text = noiDung,
                 TextAlign = ContentAlignment.MiddleCenter,
@@ -418,33 +426,39 @@ public partial class Bai06Client : Form
     private Control TaoBongBongTep(string nguoiHienThi, string tenTep, byte[] duLieu, string cheDo, bool cuaToi)
     {
         var laAnh = ChatHelper.LaAnh(tenTep);
+        var chieuRong = laAnh ? 292 : 320;
+        var chieuRongNoiDung = chieuRong - 16;
         var bongBong = new FlowLayoutPanel
         {
             AutoSize = false,
             BackColor = cuaToi ? Color.FromArgb(225, 240, 255) : Color.FromArgb(242, 242, 242),
             FlowDirection = FlowDirection.TopDown,
-            Height = laAnh ? 242 : 112,
+            Height = 1,
             Margin = new Padding(4, 3, 4, 3),
             Padding = new Padding(8),
-            Width = laAnh ? 292 : 320,
+            Width = chieuRong,
             WrapContents = false,
         };
 
         var tieuDe = new Label
         {
+            AutoEllipsis = true,
             AutoSize = false,
             Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
             ForeColor = Color.FromArgb(60, 60, 60),
             Height = 20,
             Margin = new Padding(0, 0, 0, 4),
-            Text = $"{nguoiHienThi} · {ChatHelper.GioHienTai()}{(cheDo == "PRIVATE" ? " · Riêng" : "")}",
+            Text = $"{(cheDo == "PRIVATE" ? "[Riêng] " : "")}{nguoiHienThi} · {ChatHelper.GioHienTai()}",
+            TextAlign = ContentAlignment.MiddleLeft,
             UseMnemonic = false,
-            Width = bongBong.Width - 16,
+            Width = chieuRongNoiDung,
         };
         bongBong.Controls.Add(tieuDe);
 
         if (laAnh)
         {
+            bongBong.Height = 242;
+
             var pic = new PictureBox
             {
                 BackColor = Color.FromArgb(232, 232, 232),
@@ -475,16 +489,28 @@ public partial class Bai06Client : Form
         }
         else
         {
+            var noiDungLienKet = $"Tệp: {tenTep}\nBấm để tải về máy";
+            var fontLienKet = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            var kichThuocLienKet = TextRenderer.MeasureText(
+                noiDungLienKet,
+                fontLienKet,
+                new Size(chieuRongNoiDung, int.MaxValue),
+                TextFormatFlags.WordBreak | TextFormatFlags.TextBoxControl);
+            var chieuCaoLienKet = Math.Max(40, kichThuocLienKet.Height + 4);
+
+            bongBong.Height = 62 + chieuCaoLienKet;
+
             var lienKet = new LinkLabel
             {
                 AutoSize = false,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                Height = 40,
+                Font = fontLienKet,
+                Height = chieuCaoLienKet,
                 LinkBehavior = LinkBehavior.HoverUnderline,
                 LinkColor = Color.FromArgb(35, 95, 165),
-                Text = $"Tệp: {tenTep}\nBấm để tải về máy",
+                Margin = new Padding(0, 0, 0, 4),
+                Text = noiDungLienKet,
                 UseMnemonic = false,
-                Width = bongBong.Width - 16,
+                Width = chieuRongNoiDung,
             };
             lienKet.LinkClicked += (_, _) => TaiTep(duLieu, tenTep);
             bongBong.Controls.Add(lienKet);
@@ -498,7 +524,7 @@ public partial class Bai06Client : Form
                 Text = $"{duLieu.Length / 1024.0:F1} KB",
                 TextAlign = ContentAlignment.MiddleLeft,
                 UseMnemonic = false,
-                Width = bongBong.Width - 16,
+                Width = chieuRongNoiDung,
             };
             bongBong.Controls.Add(kichThuoc);
         }
