@@ -9,6 +9,20 @@ public static class TcpHelper
     public const string DiaChiMacDinh = "127.0.0.1";
     public const int CongMacDinh = 8080;
 
+    public static string LayIpv4()
+    {
+        try
+        {
+            return Dns.GetHostEntry(Dns.GetHostName()).AddressList
+                .FirstOrDefault(diaChi => diaChi.AddressFamily == AddressFamily.InterNetwork)?.ToString()
+                ?? "127.0.0.1";
+        }
+        catch (SocketException)
+        {
+            return "127.0.0.1";
+        }
+    }
+
     public static (bool HopLe, IPEndPoint? DiemCuoi) DocDiemCuoi(string diaChi, string cong)
     {
         var diaChiDaNhap = diaChi.Trim();

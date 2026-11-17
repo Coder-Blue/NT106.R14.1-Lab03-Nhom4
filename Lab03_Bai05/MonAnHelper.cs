@@ -13,6 +13,20 @@ public static class MonAnHelper
     public const string DiaChiMacDinh = "127.0.0.1";
     public const int CongMacDinh = 8082;
 
+    public static string LayIpv4()
+    {
+        try
+        {
+            return Dns.GetHostEntry(Dns.GetHostName()).AddressList
+                .FirstOrDefault(diaChi => diaChi.AddressFamily == AddressFamily.InterNetwork)?.ToString()
+                ?? "127.0.0.1";
+        }
+        catch (SocketException)
+        {
+            return "127.0.0.1";
+        }
+    }
+
     public static string ChuanHoa(string noiDung) =>
         noiDung.Replace('\t', ' ').Replace('\r', ' ').Replace('\n', ' ').Trim();
 

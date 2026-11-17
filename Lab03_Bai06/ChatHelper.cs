@@ -11,6 +11,20 @@ public static class ChatHelper
     public const long KichThuocTepToiDa = 5 * 1024 * 1024;
     public const int KichThuocBase64ToiDa = 8 * 1024 * 1024;
 
+    public static string LayIpv4()
+    {
+        try
+        {
+            return Dns.GetHostEntry(Dns.GetHostName()).AddressList
+                .FirstOrDefault(diaChi => diaChi.AddressFamily == AddressFamily.InterNetwork)?.ToString()
+                ?? "127.0.0.1";
+        }
+        catch (SocketException)
+        {
+            return "127.0.0.1";
+        }
+    }
+
     public static string ChuanHoaTen(string ten) =>
         ten.Replace('\t', ' ').Replace('\r', ' ').Replace('\n', ' ').Replace(',', ' ').Trim();
 

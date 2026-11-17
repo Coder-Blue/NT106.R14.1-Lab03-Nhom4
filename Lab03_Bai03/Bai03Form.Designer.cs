@@ -101,7 +101,7 @@ namespace NT106.R14._1_Lab03_Nhom4.Bai03
             lblLuuY.Name = "lblLuuY";
             lblLuuY.Size = new Size(720, 50);
             lblLuuY.TabIndex = 4;
-            lblLuuY.Text = "Mở Server trước, nhấn Listen, sau đó mở Client và kết nối tới 127.0.0.1:8080.";
+            lblLuuY.Text = "Mở Server trước, nhấn Listen, sau đó mở Client và kết nối tới IP của máy:8080.";
             lblLuuY.TextAlign = ContentAlignment.MiddleCenter;
             //
             // Bai03

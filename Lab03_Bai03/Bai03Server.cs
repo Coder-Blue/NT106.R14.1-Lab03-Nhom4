@@ -26,13 +26,13 @@ public partial class Bai03Server : Form
     {
         var nguon = new CancellationTokenSource();
         nguonHuy = nguon;
-        listener = new TcpListener(IPAddress.Loopback, TcpHelper.CongMacDinh);
+        listener = new TcpListener(IPAddress.Any, TcpHelper.CongMacDinh);
 
         try
         {
             listener.Start();
             btnListen.Text = "Stop";
-            CapNhatTrangThai("Server đang lắng nghe tại 127.0.0.1:8080...");
+            CapNhatTrangThai($"Server đang lắng nghe tại {TcpHelper.LayIpv4()}:{TcpHelper.CongMacDinh}...");
             TcpHelper.GhiNhatKy(rtbNhatKy, "Server started!");
 
             while (!nguon.IsCancellationRequested)
